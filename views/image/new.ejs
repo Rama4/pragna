@@ -1,0 +1,26 @@
+<% include ../partials/header %>
+
+<h1>upload media for the question</h1>
+<div class="row">
+<form id="image-form" action="/image/new?_csrf=<%=csrfToken%>" method="POST" encType="multipart/form-data">
+  	<input id="img'+images+'" name="img[]" type="file" multiple  />
+    <br>
+    <br>
+	<button class="btn btn-lg btn-success">Submit</button>
+</form>
+</div>
+<h3>Selected images</h3>
+<div class="row" id="sel" style="margin-left:10px;">
+</div>
+<script>
+$('input:file').change(
+    function(e){
+        var f = e.target.files,
+            len = f.length;		
+        for (var i=0;i<len;i++){
+            $('#sel').append('<h4>'+f[i].name+'</h4>');
+        }
+    });
+
+</script>
+<%include ../partials/footer%>

@@ -1,0 +1,107 @@
+<% include ../partials/runningheader %>
+
+<div id="message">
+    <h2><%=message%></h2>
+</div>
+
+<div class="well" id="instructions" style="width:50%;margin: 0 auto;text-align:left;font-size: 18px;" >
+<ol>
+  <li>The Test duration is <strong><%=test.duration%> minutes</strong></li>
+  <li>The Test consists of <strong><%=test.questions.length%> questions</strong>.</li>
+  <li>Each question is of type: <strong><%=test.type%></strong></li>
+  <li>Each correct answer carries <strong><%=test.correct%></strong> marks.</li>
+  <%if(test.negative){%>
+    <li>Each wrong answer carries <strong><%=test.incorrect%></strong> mark(s).</li>
+  <%}else{%>
+    <li>There is no negative marking for any incorrect answer.</li>
+  <%}%>
+</ol>
+<a href="/test/running/<%=test.name%>" id="start" class="btn btn-lg btn-primary btn-block" >Start Test!</a>  
+
+</div>
+
+<div id="clockdiv">
+  <!--<div>    <span class="days"></span> <div class="smalltext">Days</div>   </div>-->
+  <div style="border-radius:20% 0 0 20%;">
+    <span class="hours"></span>
+    <div class="smalltext">Hours</div>
+  </div>
+  <div>
+    <span class="minutes"></span>
+    <div class="smalltext">Minutes</div>
+  </div>
+  <div style="border-radius:0 20% 20% 0;">
+    <span class="seconds"></span>
+    <div class="smalltext">Seconds</div>
+  </div>
+</div>
+
+<script>
+//$('#start').prop('disabled', true);
+
+
+  function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+var t1 = JSON.parse(htmlDecode("<%= JSON.stringify(test.date)%>"));
+//console.log(t1-t2);
+
+
+  var clock = document.getElementById('clockdiv');
+   // var daysSpan = clock.querySelector('.days');
+  var hoursSpan = clock.querySelector('.hours');
+  var minutesSpan = clock.querySelector('.minutes');
+  var secondsSpan = clock.querySelector('.seconds');
+
+//---------------------- -----------------------------------------
+	// display duration of test, prior to start
+
+function getTimeRemaining(endtime) {
+  var t = Date.parse(endtime) - Date.parse(new Date());
+  var seconds = Math.floor((t / 1000) % 60);
+  var minutes = Math.floor((t / 1000 / 60) % 60);
+  var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+  var days = Math.floor(t / (1000 * 60 * 60 * 24));
+  return {
+    'total': t,
+    'days': days,
+    'hours': hours,
+    'minutes': minutes,
+    'seconds': seconds
+  };
+}
+
+function initializeClock(id, endtime) 
+{
+  function updateClock() 
+  {
+    var t = getTimeRemaining(endtime);
+    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+    if (t.total <= 0) {
+      clearInterval(timeinterval);
+      $('#start').prop('disabled', false);
+      $('#message >h2').html("test already started, please click start to begin.");
+  
+    }
+  }
+  updateClock();
+  var timeinterval = setInterval(updateClock, 1000);
+}
+if(moment() >=   moment(t1))
+  //initializeClock('clockdiv',new Date());
+{
+  console.log("awdaw");
+  clearInterval(timeinterval);
+}
+else
+  initializeClock('clockdiv',t1);
+
+
+</script>
+<% include ../partials/footer %>

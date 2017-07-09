@@ -1,0 +1,31 @@
+<%  include ../partials/header %>
+<h1>Assignments index</h1>
+
+<a href="/assignment/new" class="btn btn-lg btn-success">New Assignment</a>
+<div class="list-group">
+    <% for(var  i=0;i<as.length;i++){%>
+        <%var t = as[i];%>
+        <a href="/assignment/<%=t.name%>" class="list-group-item">
+        <h3><%=t.name%></h3>
+        <h4>type</h4><p><%=t.type%></p>
+        <h4>negative</h4><p><%=t.negative%></p>
+        </a>
+        <div class="row" style="margin-right:0;">
+            <div class="pull-right">
+                <form id="deleteform" action = "/assignment/<%= t._id %>/?_method=DELETE" method="POST">
+                <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+                <button class = "btn btn-md btn-danger"  >Delete</button>
+                </form> 
+            </div>
+            <div class="pull-right">
+                <a class = "btn btn-md btn-warning" href="/assignment/edit/<%= t._id %>" >Edit</a>
+            </div>
+            <div class="pull-left">
+                <a class = "btn btn-md btn-primary" href="/assignment/running/<%= t.name %>" >Take Test</a>
+            </div>
+        </div>
+    <%}%>
+</div>
+
+
+<%  include ../partials/footer %>

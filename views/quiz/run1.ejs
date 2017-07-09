@@ -1,0 +1,327 @@
+<%  include ../partials/runningheader %>
+
+<h1>Welcome to Test</h1>
+<% var qnum = questions.length; %>
+<% var ind = 0; %>
+<% var k = 4; %>
+<button id="start" class="btn btn-lg btn-success" >Start Test!</button>  
+
+<div id="clockdiv">
+  <!--<div>    <span class="days"></span> <div class="smalltext">Days</div>   </div>-->
+  <div>
+    <span class="hours"></span>
+    <div class="smalltext">Hours</div>
+  </div>
+  <div>
+    <span class="minutes"></span>
+    <div class="smalltext">Minutes</div>
+  </div>
+  <div>
+    <span class="seconds"></span>
+    <div class="smalltext">Seconds</div>
+  </div>
+</div>
+
+<h3>Test Type</h3>
+<p><%=questions[ind].type%> <%=(questions[ind].negative=='yes')?"with negative marking":"without negative marking" %></p>
+<div id="display">
+</div>
+
+<div id="response" class="container">
+  <h3>Select the Answer(s)</h3>
+  <ul class="answers">            
+    <div class="radio"><input type="radio" name="q1" value="A" id="q1A"><label for="q1a"><strong>A</strong></label><br/></div>          
+    <div class="radio"><input type="radio" name="q1" value="B" id="q1B"><label for="q1b"><strong>B</strong></label><br/></div>            
+    <div class="radio"><input type="radio" name="q1" value="C" id="q1C"><label for="q1c"><strong>C</strong></label><br/></div>            
+    <div class="radio"><input type="radio" name="q1" value="D" id="q1D"><label for="q1d"><strong>D</strong></label><br/></div>       
+  </ul>
+  <button class="btn btn-sm btn-primary"id="clear-response">Clear</button>     
+  <div id="selectedans">
+    <h3>You Selected</h3>
+    <h3><strong><span id="myans">none</span></strong></h3>
+  </div>
+</div>
+
+<div id="questiongrid">
+  <%for(var i=0;i<(qnum)/k;i++){%>
+    <div class="row">
+    <%for(var j=1;j<=k&&k*i+j<=qnum;j++){%>
+      <button class="btn btn-sm" id="<%=questions[0]._id %>"><%=k*i+j%></button>
+    <% } %>
+    </div>
+  <% } %>
+</div>
+
+<%  var imgArr = [], ansArr = []; %>
+ <% for(var i=0;i<questions.length;i++){%>
+  <% imgArr.push(questions[i].images); %>
+  <% ansArr.push(questions[i].answer); %>
+ <%  } %>
+<script>
+
+  function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+var iArr = JSON.parse(htmlDecode("<%= JSON.stringify(imgArr)%>"));
+
+var time = "0.1";
+time *= 60 * 1000;
+//var ANS = JSON.parse(htmlDecode("<%= JSON.stringify(ansArr)%>"));
+var ANS = [];
+var ans = [] , selectedOption;
+var qnum = JSON.parse(htmlDecode("<%= JSON.stringify(qnum)%>")); 
+ans = new Array(qnum);
+for(var k=0;k<qnum;k++)
+{
+  ans[k] = "$";
+  ANS[k] = "A";
+}
+//------------------------clock-----------------------------------------------------------
+var clock = document.getElementById('clockdiv');
+ // var daysSpan = clock.querySelector('.days');
+  var hoursSpan = clock.querySelector('.hours');
+  var minutesSpan = clock.querySelector('.minutes');
+  var secondsSpan = clock.querySelector('.seconds');
+
+//---------------------- -----------------------------------------
+	// display duration of test, prior to start
+	var testStarted = 0;
+    hoursSpan.innerHTML = ('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2);
+    minutesSpan.innerHTML = ('0' + Math.floor((time / 1000 / 60) % 60)).slice(-2);
+    secondsSpan.innerHTML = ('0' + Math.floor((time / 1000) % 60)).slice(-2);
+
+function getTimeRemaining(endtime) {
+  var t = Date.parse(endtime) - Date.parse(new Date());
+  var seconds = Math.floor((t / 1000) % 60);
+  var minutes = Math.floor((t / 1000 / 60) % 60);
+  var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+  var days = Math.floor(t / (1000 * 60 * 60 * 24));
+  return {
+    'total': t,
+    'days': days,
+    'hours': hours,
+    'minutes': minutes,
+    'seconds': seconds
+  };
+}
+
+function initializeClock(id, endtime) 
+{
+  function updateClock() 
+  {
+    var t = getTimeRemaining(endtime);
+    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+    if (t.total <= 0) {
+      clearInterval(timeinterval);
+    }
+  }
+  updateClock();
+  var timeinterval = setInterval(updateClock, 1000);
+}
+
+//------------------------------------answers/scores------------------------------------------------
+function calculate(ans,ANS,inc,dec) // calculate score
+{
+  var score = 0;
+  for(var k=0;k<ANS.length;k++)
+  { 
+    if(ans[k] == "$") continue;
+     score = ans[k] == ANS[k] ? score + inc : score - dec;
+  }
+  return score;    
+}
+
+//-------------------------------------question display-----------------------------------------------
+var ele,beg = "text&#34;:&#34;",last = "&#34;,&#34;",s = '<%= JSON.stringify(questions) %>';
+var starts = [],stops = [],index,i=0,len = beg.length,texts = [];
+var A = s;
+A = A.toLowerCase();
+i=0;
+while ((index = A.indexOf(beg, i)) > -1)
+{
+    starts.push(index);
+    i = index + len;
+}
+for( i=0;i<starts.length;i++)
+{
+  stops.push(A.indexOf(last, starts[i]));
+}
+if(starts.length != stops.length )
+  alert("OMG num of starts and stops unequal!");
+for(var i=0;i<starts.length;i++)
+{
+  texts.push(s.substring(starts[i]+len,stops[i]));
+}
+function setcheckbox(ind)
+{
+  // set required checkbox as checked, for the current question
+    $('.answers > .radio > input').each(function ()
+    { 
+        if($(this)[0].value == ans[ind])
+          $(this).prop('checked', true);
+        else
+          $(this).prop('checked', false);
+    });
+}
+function displayQuestion(i)
+{
+    $('#myans').html(ans[i] == '$' ? 'none' : ans[i]);      
+    ele = "<h3>Question: "+(i+1)+"</h3><pre>"+texts[i]+"</pre>";
+    for(var j=0;j<iArr[i].length;j++)
+    {
+      ele += "<img src='/images/"+iArr[i][j]+"' height='auto' width='auto'>";
+    }
+    $('#display').html(ele);
+    setcheckbox(i); //display saved option for current question
+}
+$('#questiongrid .row button').click(function()
+{
+    var str = $(this).html();
+    i = parseInt(str)-1;
+   displayQuestion(i);
+}); 
+//-----------------------------------------------------------------------
+$('#clear-response').click(function()
+{
+  console.log(i);
+  if(ans[i] == '$')
+    return;
+    console.log('#q1'+ans[i]);
+  $('#q1'+ans[i])[0].checked = false;
+  ans[i] = "$";
+  $('#myans').html('none');
+
+});
+//-----------------------------------------------------------------------
+$('#start').click(function()  // start button click
+{
+    // send a post to a server, indicating that test has started
+  if(testStarted)      //if test already began, further clicks should not affect the timer
+    return;
+  $(this).hide();                                           // hide the start button
+  var deadline = new Date(Date.parse(new Date()) + time);   // set deadline
+	initializeClock('clockdiv',deadline);	                  // start clock
+ testStarted = 1;
+ $('#response').show(); // show options
+ $('#questiongrid').show(); // show question list
+ i=0; 
+ displayQuestion(i);
+ // send the test start time to server.In server, a parallel timer counts down
+ // after count down over, it sends a json, indicating test 'over'.Then the client makes another ajax post
+ // and sends the user's answers to the server, which then stores it in database and responds with 'success', upon which the client redirects to another page.
+$.ajax({    
+          type: "POST",
+          url: "/nana",
+          data: { _csrf : '<%=csrfToken%>' , deadline : deadline },
+          success: function(ajaxResult)
+          {
+              if (ajaxResult.status === "Over") 
+              {    // send user's answers to server
+                  $.ajax({
+                    type: "POST",
+                    url: "/testresult",
+                    data: { _csrf : '<%=csrfToken%>' , ans : ans },
+                    success: function(d)
+                    {   // redirect after storing user's answers
+                        if (d.status === "Success") 
+                        {
+                              window.location = d.redirect;
+                        }
+                    }
+                });
+              }
+          }
+      });
+});
+//----------------------------------------------------------------------
+i=0;
+$('input').on('click',function()
+{
+  selectedOption = $(this)[0].value;
+  if(ans[i] === selectedOption) // uncheck 
+  { 
+    this.checked = false;
+    ans[i] = "$";
+    $('#myans').html('none');
+  }
+  else  //save the checked option
+  {
+    ans[i] = selectedOption;
+    $('#myans').html(ans[i]);
+  }
+});
+//----------------------------------------------------------------------
+
+$('#response').hide();
+$('#questiongrid').hide();
+//----------------------------------------------------------------------
+
+$(window).on('load', function() {
+  if(!document.cookie)
+  {
+    console.log(ans);
+  }
+  else
+  {
+    ans  = getCookie('responses').split(',');
+    console.log(ans);
+    setcheckbox(0);
+  }
+  });
+
+/*
+To avoid scamming, chromium and hence chrome have decided to 
+remove the ability to set a custom message in the onbeforeunload dialog.
+but this does the required work though : 
+an alert is popped up whenever the user attempts to close page/browser
+*/
+
+$(window).on('beforeunload', function() {
+  setCookie('responses',ans,10);
+      return 'Are you sure want to LOGOUT the session ?';
+  });
+
+function setCookie(cname, cvalue, minutes) {
+    var d = new Date();
+    d.setTime(d.getTime() + (minutes * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function checkCookie() {
+    var user = getCookie("username");
+    if (user != "") {
+        alert("Welcome again " + user);
+    } else {
+        user = prompt("Please enter your name:", "");
+        if (user != "" && user != null) {
+            setCookie("username", user, 365);
+        }
+    }
+}
+//----------------------------------------------------------------------
+
+
+</script>
+<%  include ../partials/footer %>

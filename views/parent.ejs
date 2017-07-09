@@ -1,0 +1,47 @@
+<%  include ./partials/header %>
+
+<h1 style="text-align: center">Parent Profile</h1>
+<div class="well">
+    <h4>Phone</h4>
+    <h5><%=par.phone%></h5>
+    <h4>Address</h4>
+    <pre><%=par.address%></pre>
+    <h4>Wards</h4>
+    <ul class="list-group">
+    <%for(var i=0;i<par.wards.length;i++){%>
+        <%var t = par.wards[i];%>
+        <a class="list-group-item" href="/profile/<%=t.user.username%>"><%=t.user.username%></a>
+    <%}%>
+    </ul>
+</div>
+
+<div class="container">
+    <h1 style="text-align: center">Edit Profile</h1>
+    <div class="row">
+        <div style="width: 50%; margin: 25px auto;">
+            <form action = "/edit/<%=par.user.username%>" method = "post">
+                <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="phone" value="<%=par.phone%>" placeholder="9876543210">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" type="text" name="address" placeholder="Address"><%=par.address%></textarea>
+                </div>
+                <div class="form-group">
+                    <select id="wards" name="wards" multiple>
+                        <option>none</option>
+                        <%for(var i=0;i<studs.length;i++){%>
+                        <option value="<%=studs[i]._id%>"><%= studs[i].user.username%></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="btn btn-lg btn-primary btn-block" type="submit" value = "Save Changes">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<%  include ./partials/footer %>

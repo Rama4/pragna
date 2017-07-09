@@ -1,0 +1,27 @@
+<% include ../partials/header%>
+	<h1>View Questions</h1>
+	<a href="/question/new" class="btn btn-primary btn-success">Add a Question</a>
+	<a href="/question/newhtml" class="btn btn-primary btn-success">Import questions from html document</a>
+	<a href="/question/qq" class="btn btn-primary btn-success">MathJax editor</a>
+	
+	<div id="questions-list" class="list-group">
+		<% for(var i=0;i<questions.length;i++){ %>
+			<a href="/question/<%=questions[i]._id%>" class="list-group-item">
+				<pre><%=questions[i].text%></pre>
+				<p>type:<%=questions[i].type%></p>
+				<p>negative:<%=questions[i].negative%></p>
+			</a>
+			<div class="row" style="margin-right:0;">
+				<div class="pull-right">
+					<form id="deleteform" action = "/question/<%= questions[i]._id %>/?_method=DELETE" method="POST">
+					<input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+					<button class = "btn btn-xs btn-danger"  >Delete</button>
+					</form> 
+				</div>
+				<div class="pull-right">
+					<a class = "btn btn-xs btn-warning" href="/question/edit/<%= questions[i]._id %>" >Edit</a>
+				</div>
+			</div>
+		<% } %>
+	</div>
+<% include ../partials/footer%>

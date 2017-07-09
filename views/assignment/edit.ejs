@@ -1,0 +1,147 @@
+<%  include ../partials/header %>
+<div class="row" style="width:40%;margin:0 auto;" >
+	<h1  style="text-align: center">Edit Assignment</h1>
+	<form id="text-form" action="/assignment/edit/<%=t._id%>" method="POST">
+		<div class="form-group"><input class="form-control" type="hidden" name="_csrf" value="<%=csrfToken%>"/></div>
+		<label>Name</label>
+		<div class="form-group"><input class="form-control" type="text" name="name" value="<%=t.name%>"/></div>
+		<label>Deadline</label>
+		<div class="form-group"><input class="form-control" id="datetime" name="date" type="datetime-local">
+        <label>correct answer marks</label>
+		<div class="form-group"><input class="form-control" type="text" value="<%=t.correct%>" name="correct"/></div>
+    	<label>wrong answer marks</label>
+		<div class="form-group"><input class="form-control" type="text" value="<%=t.incorrect%>" name="incorrect"/></div>
+		<label>Select Type</label>
+		<div class="form-group"><select class="form-control" id="type" name="type">    
+			<option value="Fill Ups">Fill Ups</option>
+			<option value="Matrix Match">Matrix Match</option>
+			<option value="One Or More Options Correct">One Or More Options Correct</option>
+			<option value="Single Option Correct">Single Option Correct</option>
+		</select></div>
+		<label>Negative Marking</label>
+		<div class="form-group"><select class="form-control" id="neg" name="negative">
+			<option value="yes">yes</option>
+			<option value="no">no</option>
+		</select></div>
+		<label>Questions</label>
+		<div class="form-group"><select class="form-control" id="questions" name="questions" multiple>
+            <option value="">none</option>
+			<%for(var i=0;i<questions[qid].length;i++){%>
+				<option value=<%=questions[qid][i]%>questions[qid][i]</option>	
+			<%}%>
+		</select></div>
+		<label>Select batch</label>
+		<div class="form-group"><select class="form-control" multiple name="batches" id="batch">
+			<option value="">none</option>
+			<%for(b of batches){%>
+				<option value="<%=b%>"><%=b%></option>
+			<%}%>
+		</select></div>
+		<button class="btn btn-lg btn-block btn-success">Submit</button>
+	</form>
+	<div class="btn btn-md btn-primary"  onclick="
+			var el = $('#questions')[0];
+			$('#selected').html(getSelectValues(el));">
+			Show selected questions</div>
+	<div class="row">
+    <label>questions selected:</label>
+    <div id="selected">
+    </div>
+</div>
+</div>
+
+<script>
+
+
+
+// Return an array of the selected opion values
+// select is an HTML select element
+function getSelectValues(select) {
+  var result = [];
+  var options = select && select.options;
+  var opt;
+
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+
+    if (opt.selected) {
+      result.push(opt.value || opt.text);
+      result.push('<br>');
+    }
+  }
+  return result;
+}
+function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+
+	$(document).ready(function()
+	{
+		var qtype = JSON.parse(htmlDecode("<%= JSON.stringify(t.type)%>"));
+		var qneg = JSON.parse(htmlDecode("<%= JSON.stringify(t.negative)%>"));
+		var ques = JSON.parse(htmlDecode("<%= JSON.stringify(t.questions)%>"));
+		var d = JSON.parse(htmlDecode("<%= JSON.stringify(t.date)%>"));
+		var bat2 = JSON.parse(htmlDecode("<%= JSON.stringify(t.batches)%>"));
+		var aa = $('#type> option');
+		var bb = $('#neg> option');
+		var cc = $('#questions> option');
+		var dd = $('#batch> option');
+		for(var i=0;i<aa.length;i++)
+			if(aa[i].innerHTML == qtype)
+			{	
+				aa[i].setAttribute('selected','selected');	
+				break;
+			}
+		for(var i=0;i<bb.length;i++)
+			if(bb[i].innerHTML == qneg)
+			{	
+				bb[i].setAttribute('selected','selected');	
+				break;
+			}
+		for(var i=0,j=0;i<dd.length;i++)
+		{
+			if(dd[i].innerHTML === bat2[j])
+			{
+				dd[i].setAttribute('selected','selected');
+				++j;
+			}
+		}
+		var f = moment(d).tz("Asia/Calcutta").format().toString();
+		f = f.substr(0,f.length-6);	// remove +5:30 from the string
+		$('#datetime').attr('value',f);
+
+		var t,M=[];
+		var questions = JSON.parse(htmlDecode("<%= JSON.stringify(questions)%>"));
+		var types = JSON.parse(htmlDecode("<%= JSON.stringify(types)%>"));
+		for(var i=0; i<questions.length;i++)
+				M[types[i]] = i;
+		var arr= [],str;
+		function change_questions(i)
+		{
+			if(i ==undefined)
+				return $('#questions').html("<option value=''>none</option>");	
+			arr = questions[i];
+			str = "<option value=''>none</option>";
+			for(var j=0;j<arr.length;j++)
+				str += "<option value='"+arr[j]+"'>"+arr[j]+"</option>";
+			$('#questions').html(str);
+		}
+		$('#type').change(function(e){
+			change_questions(M[$(this).val()]);			
+		}).change();
+
+		var cc = $('#questions> option');
+		for(var i=0;i<cc.length;i++)
+		{	
+			var found = ques.includes(cc[i].label);
+			if(found)
+			{	
+				cc[i].setAttribute('selected','selected');	
+			}
+		}
+	});
+</script>
+<%  include ../partials/footer %>

@@ -1,0 +1,110 @@
+<%  include ../partials/header %>
+<div class="row" style="width:40%;margin:0 auto;" >
+	<h1 style="text-align: center">New Assignment</h1>
+	<form id="text-form" action="/assignment/new" method="POST">
+		<div class="form-group"><input class="form-control" type="hidden" name="_csrf" value="<%=csrfToken%>"/></div>
+		<label>Name</label>
+		<div class="form-group"><input class="form-control" required type="text" name="name"/></div>
+    <label>Deadline</label>
+		<div class="form-group"><input class="form-control" required id="datetime" name="date" type="datetime-local"></div>
+		<label>correct answer marks</label>
+		<div class="form-group"><input class="form-control" type="text" value=4 name="correct" placeholder="4"/></div>
+    <label>wrong answer marks</label>
+		<div class="form-group"><input class="form-control" type="text" value=-1 name="incorrect" placeholder="-1"/></div>
+    <label>Select Type</label>
+		<div class="form-group"><select  required class="form-control" id="type" name="type">    
+			<option value="Fill Ups">Fill Ups</option>
+			<option value="Matrix Match">Matrix Match</option>
+			<option value="One Or More Options Correct">One Or More Options Correct</option>
+			<option value="Single Option Correct">Single Option Correct</option>
+		</select></div>
+		<label>Negative Marking</label>
+		<div class="form-group"><select class="form-control" required name="negative">
+			<option value="yes">yes</option>
+			<option value="no">no</option>
+		</select></div>
+		<label>Questions</label>
+		<div class="form-group">
+			<select class="form-control" id="questions" name="questions" multiple>
+			</select></div>
+		<label>Select batch</label>
+		<div class="form-group"><select class="form-control" multiple name="batches" id="">
+			<option value="">none</option>
+			<%for( b of batches){%>
+				<option value="<%=b%>"><%=b%></option>
+			<%}%>
+		</select></div>
+		<button class="btn btn-lg btn-block btn-success">Submit</button>
+	</form>
+	<button onclick="
+			var el = $('#questions')[0];
+			$('#selected').html(getSelectValues(el));">
+			Show selected questions</button>
+	<div class="row">
+	<label>questions selected:</label>
+	<div id="selected">
+	</div>
+</div>
+</div>
+
+<script>
+	function htmlDecode(input)
+{    // for passing EJS variables to javascript
+	var e = document.createElement('div');
+	e.innerHTML = input;
+	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+
+var t,M=[];
+var test_types = [];
+$("#type option").each(function()
+{
+    test_types.push($(this).val());
+});
+test_types =  test_types.sort();
+
+var questions = JSON.parse(htmlDecode("<%= JSON.stringify(questions)%>"));
+for(var i=0; i<questions.length;i++)
+{
+	var t = questions[i][0].type;
+		M[t] = i;
+}
+var arr= [],str;
+function change_questions(i)
+{
+	if(i ==undefined)
+		return $('#questions').html("<option value=''>none</option>");	
+	arr = questions[i];
+	str = "<option value=''>none</option>";
+	for(var j=0;j<arr.length;j++)
+		str += "<option value='"+arr[j]._id+"'>"+arr[j]._id+"</option>";
+	$('#questions').html(str)
+}
+
+$(document).ready(function(event)
+{
+	$('#type').change(function(e){
+		change_questions(M[$(this).val()]);			
+	}).change();
+});
+
+
+// Return an array of the selected opion values
+// select is an HTML select element
+function getSelectValues(select) {
+  var result = [];
+  var options = select && select.options;
+  var opt;
+
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+
+    if (opt.selected) {
+      result.push(opt.value || opt.text);
+      result.push('<br>');
+    }
+  }
+  return result;
+}
+</script>
+<%  include ../partials/footer %>

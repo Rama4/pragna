@@ -1,0 +1,172 @@
+/*------------------NAVBAR------------------------------------------------------------------------------*/
+/*.navbar{
+    margin-bottom: 0;
+    position: fixed;
+    top:0;
+    width: 100%;
+}*/
+/*underline links when hovered upon */
+.nav>li>a {
+      transition: border-color .2s;
+    -moz-transition: border-color .2s;
+    -webkit-transition: border-color .2s;
+    -o-transition: border-color .2s;
+    border-bottom: solid 3px transparent;
+}
+.nav>li>a:focus, .nav>li>a:hover {
+    border-bottom-color: white;
+}
+/*customize dropdown menu interaction */
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+    background-color: #eee;
+    border-color: transparent;
+}
+/* navbar menu when loggedin */
+ul.dropdown-menu {	/* dropdown menu when logged in*/
+    background-color: #aaa;
+}
+.navbar-collapse.in {	/*preventing unwanted scrollbars in collapsed dropdown menu*/
+	overflow-y: visible;
+}
+.navbar-login{
+    min-width: 250px;
+    padding: 10px;
+    padding-bottom: 0px;
+    color:black;
+    background:white;
+}
+.navbar-login-session{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+.icon-size{
+    font-size: 83px;
+}
+.dropdown-menu>li>a{
+    display: block;
+    clear: both;
+    font-weight: 400;
+    padding: 10px!important;
+    line-height: 1.42857143;
+    color: black!important;
+    background:white!important;
+    white-space: nowrap;
+}
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover{
+    text-decoration: none;
+    color: white!important;
+    background: #283048!important; 
+}
+/*This is modifying the btn-primary colors but you could create your own .btn-something class as well*/
+.btn-primary {
+    color: white;
+    background-color: #283048;
+    border-color: gray; /*set the color you want here*/
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active ,.btn-primary:active:focus , .open>.dropdown-toggle.btn-primary {
+    color: black;
+    background-color: #aaa;
+    border-color: #adadad;
+}
+/*------------------------------------------------------------------------------------------------*/
+/*-----         login & register          -----*/
+
+/*login form (put icon inside input field)*/
+/* enable absolute positioning */
+.inner-addon {
+ position: relative;
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+position: absolute;
+padding: 10px;
+pointer-events: none;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+/*------------------------------------------------------------------------------------------------*/
+#copyright{
+	color:orange;
+}
+#footer{
+	color:white;
+	background:black;
+	position:fixed;
+	bottom:0;
+	width:100%;
+	height:100px;
+}
+body {
+    margin-top: 55px; /*because of fixed navbar*/
+    overflow-x:hidden;
+    /*overflow-y:hidden;*/
+    /*background: slategray;*/
+    background: silver;
+
+}
+img{
+    width:auto;
+    height:auto;
+    /*max-width:500px;
+    max-height:500px;*/
+}
+.thumbnail{
+    color:blue;
+    background: orange!important;
+}
+.row{
+    margin-left:10px;
+}
+/*---------landing-----------------*/
+/*.panel-group{
+    width:20%;
+}*/
+#announcements{
+    position: fixed;
+    z-index: 10;
+    right:0;
+    width:25%;
+    background:black;
+    height:100%;   
+    margin-top: 55px;     
+}
+#announcements>div>a ,#announcements>div>div>a{
+    color: black;
+}
+/*.panel-primary:hover, .panel-default:hover, {*/
+.panel-heading{
+    background: #232323;
+    color:#d0d0d0;
+}
+.panel:hover {
+color:white;
+background: #283048;
+}
+.panel-group{
+    background:#777;
+}
+#announcements-button{
+    background:green;
+    position:fixed;
+    right:0;
+    top:60px;
+    z-index: 15;
+}
+/*---------------------------------*/
+/*batch/new.ejs*/
+.remove-time{
+color:red;
+}
+/*---------------------------------*/
+
+#pwd{
+    display: none;
+}

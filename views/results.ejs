@@ -1,0 +1,185 @@
+<%  include ./partials/runningheader %>
+<% var qnum = test.questions.length; %>
+<% var ind = 0; %>
+<% var k = 4; %>
+
+<div id="test-type" class="container">
+  <h1>Test : <%=test.name%></h1>
+  <div class="row">
+    <div class="col-md-6">
+      <h3><span id="qnumber"></span></h3>
+      <hr>
+    </div>
+    <div class="col-md-6">
+      <h3>Test Type</h3>
+      <%if(test.negative === "yes"){%>
+        <u><h4 style="color:red;">With Negative Marking</h4></u>
+      <%}else{%>
+        <u><h4 style="color:green;">Without Negative Marking</h4></u>
+      <%}%>
+    </div>
+  </div>  
+  <br>
+</div>
+<div class="well" id="instructions" style="width:50%;margin: 0 auto;text-align:left;font-size: 18px;" >
+<ol>
+  <li>The Test duration is <strong><%=test.duration%> minutes</strong></li>
+  <li>The Test consists of <strong><%=qnum%> questions</strong>.</li>
+  <li>Each question is of type: <strong><%=test.type%></strong></li>
+  <li>Each correct answer carries <strong><%=test.correct%></strong> marks.</li>
+  <%if(test.negative){%>
+    <li>Each wrong answer carries <strong><%=test.incorrect%></strong> mark(s).</li>
+  <%}else{%>
+    <li>There is no negative marking for any incorrect answer.</li>
+  <%}%>
+</ol>
+<button id="close" class="btn btn-lg btn-warning btn-block" >Close</button>  
+</div>
+
+<div id="display"></div>
+<button id="show-answer" class="btn btn-lg <btn-success></btn-success>" >Show Hint</button>  
+<div id="answer"></div>
+<div id="response" class="container" style="text-align:left;">
+    <h4>Your Answer: <span id="ya"></span></h4>
+    <h4>Correct Answer: <span id="ca"></span></h4>
+    <h4>Verdict: <span id="ver"></span></h4>
+</div>
+
+<div id="questiongrid">
+  <%for(var i=0;i<(qnum)/k;i++){%>
+    <div class="row">
+    <%for(var j=1;j<=k&&k*i+j<=qnum;j++){%>
+      <button class="btn btn-sm" id="q<%=(k*i+j)%>"><%=k*i+j%></button>
+    <% } %>
+    </div>
+  <% } %>
+  <div id="buttons">
+    <button class="btn btn-md" id="show-instruction">Show Instructions</button>
+  </div>
+</div>
+
+<%  var imgArr = [], ansArr = []; %>
+ <% for(let ques of test.questions){%>
+  <% imgArr.push(ques.images); %>
+ <%  } %>
+<%console.log(test._id);%>
+<script>
+
+function htmlDecode(input)
+{    // for passing EJS variables to javascript
+    var e = document.createElement('div');
+    e.innerHTML = input;
+    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+var iArr = JSON.parse(htmlDecode("<%= JSON.stringify(imgArr)%>"));
+
+var selectedOption;
+var qnum = JSON.parse(htmlDecode("<%= JSON.stringify(qnum)%>")); 
+//var results//; // this variable will contain answers after test is over(get from server)
+var results = JSON.parse(htmlDecode("<%= JSON.stringify(test.results[0])%>")); 
+var testid = JSON.parse(htmlDecode("<%= JSON.stringify(test._id)%>"));
+var ANS = JSON.parse(htmlDecode("<%= JSON.stringify(ANS)%>"));
+var ans = JSON.parse(htmlDecode("<%= JSON.stringify(ans)%>"));
+var ver = JSON.parse(htmlDecode("<%= JSON.stringify(ver)%>"));
+console.log(ANS);
+//-------------------------------------question display-----------------------------------------------
+var ele,quot = "&#34;:&#34;",last = "&#34;,&#34;",s = '<%= JSON.stringify(test.questions) %>';
+var A = s , i=0;
+function get_req_elems(A,beg,last)
+{
+  var starts = [],stops = [],index,i=0,len = beg.length,elems = [];  
+  A = A.toLowerCase();
+  while ((index = A.indexOf(beg, i)) > -1)
+  {
+      starts.push(index);
+      i = index + len;
+  }
+  for( i=0;i<starts.length;i++)
+  {
+    stops.push(A.indexOf(last, starts[i]));
+  }
+  if(starts.length != stops.length )
+    alert("OMG num of starts and stops unequal!");
+  for(var i=0;i<starts.length;i++)
+  {
+    elems.push(s.substring(starts[i]+len,stops[i]));
+  }
+  return elems;
+}
+var texts = get_req_elems(s,"text"+quot,last);
+var htmls = get_req_elems(s,"html"+quot,last);
+var answers = get_req_elems(s,"hint"+quot,last);
+
+function decodeHtml(html) {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
+function displayQuestion(i)
+{
+    ele = decodeHtml(htmls[i]);
+    $('#qnumber').html("Question: "+(i+1));
+    for(var j=0;iArr[i]&&j<iArr[i].length;j++)
+    {
+      ele += "<img src='/images/"+iArr[i][j]+"' height='auto' width='auto'>";
+    }
+    $('#display').html(ele);
+}
+
+function displayAnswer(i)
+{
+    ele = decodeHtml(answers[i]);  
+    for(var j=0;iArr[i]&&j<iArr[i].length;j++)
+    {
+      ele += "<img src='/images/"+iArr[i][j]+"' height='auto' width='auto'>";
+    }
+    $('#answer').html(ele); 
+}
+function displayVerdict(i)
+{
+    $('#ca').html(ANS[i]);
+    $('#ya').html(ans[i][0] === "$" ? "none" : ans[i]);
+    $('#ver').html(ver[i]);
+}
+//---------------------------question grid buttons-----------------------------------
+$('#questiongrid > .row > button').click(function()
+{
+    var str = $(this).html();
+    i = parseInt(str)-1;
+    $(this).addClass('visited');
+   displayQuestion(i);
+});
+$('#show-instruction').click(function()
+{
+  $('#instructions').toggle();
+  $('#display').toggle();
+  $('#close').show();
+}); 
+$('#close').click(function()
+{
+  $(this).hide();
+  $('#display').toggle();
+  $('#instructions').toggle();
+});
+
+//------------------------------initial settings----------------------------------------
+i=0;
+$('#show-instruction').hide();
+$("#instructions").hide();
+// show verdict for each question(create html element for showing it)
+// add listeners for show answers and question grid click
+$('#show-answer').click(function()
+{
+    displayAnswer(i);
+});
+displayVerdict(i);
+displayQuestion(i);
+$('#questiongrid > .row > button').click(function()
+{ // here, we are adding extra functionality, apart from what's already defined
+    $('#answer').html("");
+    displayVerdict(i);
+});
+
+
+</script>
+<%  include ./partials/footer %>

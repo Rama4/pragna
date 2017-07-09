@@ -1,0 +1,34 @@
+<%  include ../partials/header %>
+<h1>Showing Assignment : <%=t.name%></h1>
+<h3><%=t.name%></h3>
+<p><em>Submitted By <strong><%= t.author.username %></strong></em></p>
+<h4>deadline</h4><p id="date"></p>
+<h4>type</h4><p><%=t.type%></p>
+<h4>negative</h4><p><%=t.negative%></p>
+<h4>batch</h4>
+<%if(t.batches){%>
+<% for(b of t.batches){%>
+    <p><%=b%></p>
+<%}%>
+<%}%>
+<h4>questions</h4>
+<%if(t.questions){%>
+<% for( q of t.questions){%>
+    <p><%=q%></p>
+<%}%>
+<%}%>
+<script>
+function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+	$(document).ready(function()
+	{
+		var d = JSON.parse(htmlDecode("<%= JSON.stringify(t.date)%>"));
+		var f = moment(d).tz("Asia/Calcutta").format("DD-MMM-YYYY hh:mm A").toString();
+		$('#date').html(f);
+	});
+</script>
+<%  include ../partials/footer %>

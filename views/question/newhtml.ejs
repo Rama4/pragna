@@ -1,0 +1,34 @@
+<% include ../partials/header %>
+<h1>upload html and its images</h1>
+<div class="row" style="width:50%;">
+    <form id="image-form" action="/question/newhtml?_csrf=<%=csrfToken%>" method="POST" encType="multipart/form-data">
+        <div class="form-group">
+            <label for="negative" class="control-label">Negative Marking</label>
+            <select class="form-control" id="negative" name="negative">
+                <option value="yes">yes</option>
+                <option <v> </v>alue="no">no</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="type" class="control-label">Type</label>
+            <select class="form-control" id="type" name="type">
+                <option value="Single Option Correct">Single option Correct</option>
+                <option value="One Or More Options Correct">One Or More options correct</option>
+                <option value="Matrix Match">Matrix match</option>
+                <option value="Fill Ups">fill ups</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="files" class="control-label">Files</label>
+            <input type="file" name="files" id="files" multiple>
+        </div>
+        <div class="form-group">
+            <button  class=" btn btn-block btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+<script>
+
+
+</script>
+<%include ../partials/footer%>

@@ -1,0 +1,18 @@
+<%  include ../partials/header %>
+<h1>Showing Batch : <%=t.name%></h1>
+<p><em>Submitted By <strong><%= t.author.username %></strong></em></p>
+<h4>start time</h4><p><%=t.time%></p>
+<h4>duration</h4><p><%=t.duration%></p>
+<h4>Teacher(s)</h4>
+<%if(t.teachers){%>
+<% for(let tt of t.teachers){%>
+    <p><%=tt%></p>
+<%}%>
+<%}%>
+<h4>Students</h4>
+<%if(t.students){%>
+<% for(let tt of t.students){%>
+    <p><%=tt%></p>
+<%}%>
+<%}%>
+<%  include ../partials/footer %>

@@ -1,0 +1,30 @@
+<% include ../partials/header%>
+<h1>Showing Question</h1>
+<p><em>Submitted By <strong><%= Q.author.username %></strong></em></p>
+<%-Q.html%>
+<h4>type</h4>
+<p><%=Q.type%></p>
+<h4>negative</h4>
+<p><%=Q.negative%></p>
+<h4>answer</h4>
+<p><%-Q.answer%></p>
+<h4>hint</h4>
+<p><%-Q.hint%></p>
+<h4>Images:</h4>
+	<%for(var i=0;i<Q.images.length;i++){%>
+		<p><%=Q.images[i]%></p>
+		<img src="/images/<%=Q.images[i]%>" height="200px" width="200px">					
+	<% } %>
+<div class="row" style="margin-right:0;">
+	<div class="pull-right">
+		<form id="deleteform" action = "/question/<%= Q._id %>/?_method=DELETE" method="POST">
+		<input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+		<button class = "btn btn-xs btn-danger"  >Delete</button>
+		</form> 
+	</div>
+	<div class="pull-right">
+		<a class = "btn btn-xs btn-warning" href="/question/edit/<%= Q._id %>" >Edit</a>
+	</div>
+</div>
+	
+<% include ../partials/footer%>

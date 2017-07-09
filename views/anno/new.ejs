@@ -1,0 +1,17 @@
+<%  include ../partials/header %>
+<div class="row" style="width:40%;margin:0 auto;" >
+	<h1 style="text-align: center">New Announcement</h1>
+	<form  id="text-form" action="/announcement/new" method="POST">
+		<input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+		<label>Title</label>
+		<div class="form-group">
+			<input class="form-control" type="text" name="title"/>
+		</div>
+		<label>Message</label>
+		<div class="form-group">
+			<textarea class="form-control" rows="10" name="message"></textarea>
+		</div>
+		<button class="btn btn-lg btn-block btn-success">Submit</button>
+	</form>
+</div>
+<%  include ../partials/footer %>

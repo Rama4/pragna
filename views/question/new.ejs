@@ -1,0 +1,56 @@
+<%  include ../partials/header %>
+<h1>New Question</h1>
+<div class="row">
+	<form id="text-form" action="/question/new" method="POST">
+		<input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+		<h4>Select Question Type</h4>
+		<select name="type">
+			<option value="Single Option Correct">Single option Correct</option>
+			<option value="One Or More Options Correct">One Or More options correct</option>
+			<option value="Matrix Match">Matrix match</option>
+			<option value="Fill Ups">fill ups</option>
+		</select>
+		<h4>Negative Marking</h4>
+		<select name="negative">
+			<option value="yes">yes</option>
+			<option value="no">no</option>
+		</select>
+		<h4>Problem Statement</h4>
+		<textarea name="text"></textarea>
+		<h4>Hint</h4>
+		<textarea name="hint"></textarea>
+		<h4>Answer(s)</h4>
+		<input type="text" name="answer">
+		<h4>Images</h4>
+		<select id="images" name="images" multiple>
+			<%for(img of images){%>
+			  <option value='<%=img.path%>'><%=img.name%>
+			<% } %>
+		</select>
+		<button class="btn btn-lg btn-success">Submit</button>
+	</form>
+	<button onclick="
+			var el = $('#images')[0];
+			alert(getSelectValues(el));">
+			Show selected Images</button>
+</div>
+<script>
+// Return an array of the selected opion values
+// select is an HTML select element
+function getSelectValues(select) {
+  var result = [];
+  var options = select && select.options;
+  var opt;
+
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+
+    if (opt.selected) {
+      result.push(opt.value || opt.text);
+    }
+  }
+  return result;
+}
+
+</script>
+<%  include ../partials/footer %>

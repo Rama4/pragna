@@ -1,0 +1,22 @@
+<%  include ../partials/header %>
+<h1>Showing Quiz : <%=t.name%></h1>
+<h3><%=t.name%></h3>
+<p><em>Submitted By <strong><%= t.author.username %></strong></em></p>
+<h4>duration</h4><p><%=t.duration%></p>
+<h4>type</h4><p><%=t.type%></p>
+<h4>negative</h4><p><%=t.negative%></p>
+<h4>correct answer</h4><p><%=t.correct%> marks</p>
+<h4>wrong answer</h4><p><%=t.incorrect%> marks</p>
+<h4>batch</h4>
+<%if(t.batches){%>
+<% for(b of t.batches){%>
+    <p><%=b%></p>
+<%}%>
+<%}%>
+<h4>questions</h4>
+<%if(t.questions){%>
+<% for( q of t.questions){%>
+    <p><%=q%></p>
+<%}%>
+<%}%>
+<%  include ../partials/footer %>

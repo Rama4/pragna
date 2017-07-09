@@ -1,0 +1,83 @@
+<%  include ../partials/header %>
+<h1>Edit Question</h1>
+<div class="row">
+	<form id="text-form" action="/question/edit/<%=Q._id%>" method="POST">
+		<input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+		<h4>Select Question Type</h4>
+		<select id="type" name="type" value="<%=Q.type%>">
+			<option value="Single Option Correct">Single option Correct</option>
+			<option value="One Or More Options Correct">One Or More options correct</option>
+			<option value="Matrix Match">Matrix match</option>
+			<option value="Fill Ups">fill ups</option>
+		</select>
+		<h4>Negative Marking</h4>
+		<select id="neg" name="negative">
+			<option value="yes">yes</option>
+			<option value="no">no</option>
+		</select>
+		<h4>Problem Statement</h4>
+		<textarea name="text"><%=Q.text%></textarea>
+		<h4>Hint</h4>
+		<textarea name="hint"><%=Q.hint%></textarea>
+		<h4>Answer(s)</h4>
+		<input type="text" name="answer" id="answer">
+		<h4>Images</h4>
+		<select id="images" name="images" multiple>
+		<%for(img of images){%>
+			<option value='<%=img.path%>'><%=img.name%>
+		<% } %>
+		</select>
+		<button class="btn btn-lg btn-success">Submit</button>
+	</form>
+</div>
+
+<script>
+	function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+
+	$(document).ready(function()
+	{
+		var qtype = JSON.parse(htmlDecode("<%= JSON.stringify(Q.type)%>"));
+		var qneg = JSON.parse(htmlDecode("<%= JSON.stringify(Q.negative)%>"));
+		var qimages = JSON.parse(htmlDecode("<%= JSON.stringify(Q.images)%>"));
+		var ans = JSON.parse(htmlDecode("<%= JSON.stringify(Q.answer)%>"));
+		
+		var aa = $('#type> option');
+		var bb = $('#neg> option');
+		var cc = $('#images> option');
+		for(var i=0;i<aa.length;i++)
+			if(aa[i].innerHTML == qtype)
+			{	
+				aa[i].setAttribute('selected','selected');	
+				break;
+			}
+		for(var i=0;i<bb.length;i++)
+			if(bb[i].innerHTML == qneg)
+			{	
+				bb[i].setAttribute('selected','selected');	
+				break;
+			}
+		for(var i=0;i<cc.length;i++)
+		{	
+			var found = qimages.includes(cc[i].label);
+			if(found)
+			{	
+				console.log("ss");
+				cc[i].setAttribute('selected','selected');	
+			}
+		}
+		if(ans)
+		{
+			var str = "";
+			for(var i=0;i<ans.length;i++)
+				str += ans[i] +  " ";
+			str = str.trim();
+			$('#answer').val(str);
+		}
+	});
+</script>
+<%  include ../partials/footer %>

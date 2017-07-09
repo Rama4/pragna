@@ -1,0 +1,317 @@
+<%  include ../partials/runningheader %>
+<% var qnum = test.questions.length; %>
+<% var ind = 0; %>
+<% var k = 4; %>
+
+<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal">End Test</button>
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">End Test</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are You Sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="end" type="button" class="btn btn-md" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-md" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="test-type" class="container">
+  <h1>Test : <%=test.name%></h1>
+  <div class="row">
+    <div class="col-md-6">
+      <h3><span id="qnumber"></span></h3>
+      <hr>
+    </div>
+    <div class="col-md-6">
+      <h3>Test Type</h3>
+      <%if(test.negative === "yes"){%>
+        <u><h4 style="color:red;">With Negative Marking</h4></u>
+      <%}else{%>
+        <u><h4 style="color:green;">Without Negative Marking</h4></u>
+      <%}%>
+    </div>
+  </div>  
+  <br>
+</div>
+<div class="well" id="instructions" style="width:50%;margin: 0 auto;text-align:left;font-size: 18px;" >
+<ol>
+  <li>The Test duration is <strong><%=test.duration%> minutes</strong></li>
+  <li>The Test consists of <strong><%=qnum%> questions</strong>.</li>
+  <li>Each question is of type: <strong><%=test.type%></strong></li>
+  <li>Each correct answer carries <strong><%=test.correct%></strong> marks.</li>
+  <%if(test.negative){%>
+    <li>Each wrong answer carries <strong><%=test.incorrect%></strong> mark(s).</li>
+  <%}else{%>
+    <li>There is no negative marking for any incorrect answer.</li>
+  <%}%>
+</ol>
+<button id="close" class="btn btn-lg btn-warning btn-block" >Close</button>  
+</div>
+
+<div id="clockdiv">
+  <!--<div>    <span class="days"></span> <div class="smalltext">Days</div>   </div>-->
+  <div style="border-radius:20% 0 0 20%;"><span class="hours"></span><div class="smalltext">Hours</div></div>
+  <div><span class="minutes"></span><div class="smalltext">Minutes</div></div>
+  <div style="border-radius:0 20% 20% 0;"><span class="seconds"></span><div class="smalltext">Seconds</div></div>
+</div>
+
+<div id="display"></div>
+<div id="response" class="container">
+  <h3>Select the Answer(s)</h3>
+  <ul class="answers list group">            
+    <li class="list-group-item" id="A">A</li>
+    <li class="list-group-item" id="B">B</li>
+    <li class="list-group-item" id="C">C</li>
+    <li class="list-group-item" id="D">D</li>
+  </ul>
+  <button class="btn btn-sm btn-primary"id="clear-response">Clear</button>     
+  <div id="selectedans">
+    <h3>You Selected</h3>
+    <h3><strong><span id="myans">none</span></strong></h3>
+  </div>
+</div>
+
+<div id="questiongrid">
+  <%for(var i=0;i<(qnum)/k;i++){%>
+    <div class="row">
+    <%for(var j=1;j<=k&&k*i+j<=qnum;j++){%>
+      <button class="btn btn-sm" id="q<%=(k*i+j)%>"><%=k*i+j%></button>
+    <% } %>
+    </div>
+  <% } %>
+  <div id="buttons">
+    <button class="btn btn-md" id="review">Mark for Review</button>
+    <button class="btn btn-md" id="show-instruction">Show Instructions</button>
+  </div>
+</div>
+
+<%  var imgArr = [], ansArr = []; %>
+ <% for(let ques of test.questions){%>
+  <% imgArr.push(ques.images); %>
+ <%  } %>
+<%console.log(test._id);%>
+<script>
+function htmlDecode(input)
+{    // for passing EJS variables to javascript
+  var e = document.createElement('div');
+  e.innerHTML = input;
+  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+var iArr = JSON.parse(htmlDecode("<%= JSON.stringify(imgArr)%>"));
+var t1 = JSON.parse(htmlDecode("<%= JSON.stringify(test.date)%>"));
+var time = JSON.parse(htmlDecode("<%= JSON.stringify(test.duration)%>"));
+var ans , selectedOption;
+var qnum = JSON.parse(htmlDecode("<%= JSON.stringify(qnum)%>"));
+var results; // this variable will contain answers after test is over(get from server)
+var testid = JSON.parse(htmlDecode("<%= JSON.stringify(test._id)%>"));
+var testname = JSON.parse(htmlDecode("<%= JSON.stringify(test.name)%>"));
+var username = JSON.parse(htmlDecode("<%= JSON.stringify(currentuser.username)%>"));
+var userId = JSON.parse(htmlDecode("<%= JSON.stringify(currentuser._id)%>"));
+//-----------------------send answers-----------------------------------------------------
+function send_answers(url)
+{
+    $.post(url,
+    {
+        _csrf : '<%=csrfToken%>' ,
+        name: username,
+        ans: ans
+    });
+}
+//------------------------clock-----------------------------------------------------------
+var clock = document.getElementById('clockdiv');
+ // var daysSpan = clock.querySelector('.days');
+  var hoursSpan = clock.querySelector('.hours');
+  var minutesSpan = clock.querySelector('.minutes');
+  var secondsSpan = clock.querySelector('.seconds');
+
+//---------------------- -----------------------------------------
+	// display duration of test, prior to start
+    hoursSpan.innerHTML = ('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2);
+    minutesSpan.innerHTML = ('0' + Math.floor((time / 1000 / 60) % 60)).slice(-2);
+    secondsSpan.innerHTML = ('0' + Math.floor((time / 1000) % 60)).slice(-2);
+
+function getTimeRemaining(endtime) {
+  var t = Date.parse(endtime) - Date.parse(new Date());
+  var seconds = Math.floor((t / 1000) % 60);
+  var minutes = Math.floor((t / 1000 / 60) % 60);
+  var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+  var days = Math.floor(t / (1000 * 60 * 60 * 24));
+  return {
+    'total': t,
+    'days': days,
+    'hours': hours,
+    'minutes': minutes,
+    'seconds': seconds
+  };
+}
+
+function initializeClock(id, endtime) 
+{
+  function updateClock() 
+  {
+    var t = getTimeRemaining(endtime);
+    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+    if (t.total <= 0) {
+      clearInterval(timeinterval);
+      window.location.replace('/');
+    }
+  }
+  updateClock();
+  var timeinterval = setInterval(updateClock, 1000);
+}
+
+//-------------------------------------question display-----------------------------------------------
+var ele,quot = "&#34;:&#34;",last = "&#34;,&#34;",s = '<%= JSON.stringify(test.questions) %>';
+var A = s , i=0;
+function get_req_elems(A,beg,last)
+{
+  var starts = [],stops = [],index,i=0,len = beg.length,elems = [];  
+  A = A.toLowerCase();
+  while ((index = A.indexOf(beg, i)) > -1)
+  {
+      starts.push(index);
+      i = index + len;
+  }
+  for( i=0;i<starts.length;i++)
+  {
+    stops.push(A.indexOf(last, starts[i]));
+  }
+  if(starts.length != stops.length )
+    alert("OMG num of starts and stops unequal!");
+  for(var i=0;i<starts.length;i++)
+  {
+    elems.push(s.substring(starts[i]+len,stops[i]));
+  }
+  return elems;
+}
+var texts = get_req_elems(s,"text"+quot,last);
+var htmls = get_req_elems(s,"html"+quot,last);
+
+function setcheckbox(ind)
+{   // display current question's selected option
+    $('.answers > li').each(function ()
+    { 
+        if(ans[ind].indexOf($(this).text()) != -1)
+           $(this).addClass("markedoption");
+        else
+          $(this).removeClass("markedoption");
+    });
+}
+function decodeHtml(html)
+{
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
+function displayQuestion(i)
+{
+    $('#myans').html(ans[i][0] === '$' ? 'none' : ans[i].toString());      
+    //ele = "<h3>Question: "+(i+1)+"</h3><pre>"+texts[i]+"</pre>";
+    ele = decodeHtml(htmls[i]);
+    $('#qnumber').html("Question: "+(i+1));
+
+    for(var j=0;iArr[i]&&j<iArr[i].length;j++)
+    {
+      ele += "<img src='"+iArr[i][j]+"' height='auto' width='auto'>";
+    }
+    $('#display').html(ele);
+    setcheckbox(i); //display saved option for current question
+}
+//---------------------------question grid buttons-----------------------------------
+$('#questiongrid > .row > button').click(function()
+{
+    var str = $(this).html();
+    i = parseInt(str)-1;
+    $(this).addClass('visited');
+    displayQuestion(i);
+});
+$('#review').click(function()
+{
+  var x = $(this).html()  === "Mark for Review" ? "Unmark" : "Mark for Review";
+  $(this).html(x); // rename button
+  $('#q'+(i+1)).toggleClass('marked');
+}); 
+$('#show-instruction').click(function()
+{
+  $('#instructions').toggle();
+  $('#display').toggle();
+  $('#close').show();
+}); 
+$('#close').click(function()
+{
+  $(this).hide();
+  $('#display').toggle();
+  $('#instructions').toggle();
+});
+//-----------------------------------------------------------------------
+$("#end").click(function()
+{
+  $.post('/test/end-test',{'userId':userId,_csrf:'<%=csrfToken%>'});
+  window.location. replace('/');
+});
+//----------------------------save/clear responses------------------------------------------
+$('#clear-response').click(function()
+{
+  if(ans[i][0] === '$')
+    return;
+  ans[i] = ['$'];
+  $('#myans').html('none');
+  $("#A").removeClass("markedoption");
+  $("#B").removeClass("markedoption");
+  $("#C").removeClass("markedoption");
+  $("#D").removeClass("markedoption");
+});
+i=0;
+var disp_sel_ans;
+$('.answers>li').on('click',function()
+{
+  selectedOption = $(this).text();
+  var empty = ans[i][0] === '$';
+  var ind = empty ? -1 : ans[i].indexOf(selectedOption);
+  if(ind > -1) // uncheck 
+  { 
+    $("#"+selectedOption).toggleClass("markedoption");
+    ans[i].splice(ind, 1);
+    disp_sel_ans = ans[i].toString();
+    if(ans[i].length === 0)
+    {  ans[i] = ['$']; disp_sel_ans = "none";  }
+  }
+  else  //save the checked option
+  {
+    $("#"+selectedOption).toggleClass("markedoption");
+    empty ? ans[i][0] = selectedOption : ans[i].push(selectedOption);
+    ans[i].sort();
+    disp_sel_ans = ans[i].toString();
+  }
+  $('#myans').html(disp_sel_ans);
+});
+//------------------------------initial settings----------------------------------------
+ans = JSON.parse(htmlDecode("<%= JSON.stringify(ans)%>")); 
+initializeClock('clockdiv',moment(t1).add(time,"minutes"));
+$('#instructions').hide();
+$('#close').hide();
+setcheckbox(0);
+displayQuestion(0);
+
+//-----------------------------------cookies-----------------------------------
+
+$(window).on('beforeunload', function() {
+  send_answers('/test/save/'+testname);
+  return 'Are you sure want to LOGOUT the session ?';
+});
+
+//----------------------------------------------------------------------
+</script>
+<%  include ../partials/footer %>

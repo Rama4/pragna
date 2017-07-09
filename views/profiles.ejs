@@ -1,0 +1,29 @@
+<%  include ./partials/header %>
+
+<h1 style="text-align: center">Profiles</h1>
+<div class="container">
+    <h4>Students</h4>
+    <ul class="list-group">
+    <%for(let t of studs){%>
+        <a class="list-group-item" href="/profile/<%=t.user.username%>"><%=t.user.username%></a>
+    <%}%>
+    </ul>
+</div>
+<div class="container">
+    <h4>Parents</h4>
+    <ul class="list-group">
+    <%for(let t of pars){%>
+        <a class="list-group-item" href="/profile/<%=t.user.username%>"><%=t.user.username%></a>
+    <%}%>
+    </ul>
+</div>
+<div class="container">
+    <h4>Teachers</h4>
+    <ul class="list-group">
+    <%for(let t of teachs){%>
+        <a class="list-group-item" href="/profile/<%=t.user.username%>"><%=t.user.username%></a>
+    <%}%>
+    </ul>
+</div>
+
+<%  include ./partials/footer %>

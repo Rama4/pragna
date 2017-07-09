@@ -1,0 +1,140 @@
+<%  include ../partials/header %>
+<h1>Edit Quiz</h1>
+<div class="row" >
+	<form id="text-form" action="/quiz/edit/<%=t._id%>" method="POST">
+		<input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+		<h4>Quiz Name</h4>
+		<input type="text" name="name" value="<%=t.name%>"/><br>
+        <h4>Duration (in minutes)</h4>
+		<input type="text" id="duration" value="<%=t.duration%>" name="duration" placeholder="120"/>
+		<h4>correct answer marks</h4>
+		<input type="text" value=<%=t.correct%> name="correct"/>
+    	<h4>wrong answer marks</h4>
+		<input type="text" value=<%=t.incorrect%> name="incorrect"/>
+        <h4>Select Quiz Type</h4>
+		<select required id="type" name="type">    
+			<option value="Fill Ups">Fill Ups</option>
+			<option value="Matrix Match">Matrix Match</option>
+			<option value="One Or More Options Correct">One Or More Options Correct</option>
+			<option value="Single Option Correct">Single Option Correct</option>
+		</select>	
+		<h4>Negative Marking</h4>
+		<select id="neg" name="negative">
+			<option value="yes">yes</option>
+			<option value="no">no</option>
+		</select>
+		<h4>Questions</h4>
+		<select id="questions" name="questions" multiple>
+			<option value="">none</option>
+			<%for(var i=0;i<questions[qid].length;i++){%>
+				<option value=<%=questions[qid][i]%>questions[qid][i]</option>	
+			<%}%>
+		</select>
+		<h4>Select batch</h4>
+		<select multiple name="batches" id="batch">
+			<option value="">none</option>
+			<%for(b of batches){%>
+				<option value="<%=b%>"><%=b%></option>
+			<%}%>
+		</select>
+		<button class="btn btn-lg btn-success">Submit</button>
+	</form>
+	<button onclick="
+			var el = $('#questions')[0];
+			$('#selected').html(getSelectValues(el));">
+			Show selected questions</button>
+</div>
+<div class="row">
+    <h4>questions selected:</h4>
+    <div id="selected">
+    </div>
+</div>
+<script>
+// Return an array of the selected opion values
+// select is an HTML select element
+function getSelectValues(select) {
+  var result = [];
+  var options = select && select.options;
+  var opt;
+
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+
+    if (opt.selected) {
+      result.push(opt.value || opt.text);
+      result.push('<br>');
+    }
+  }
+  return result;
+}
+function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+
+	$(document).ready(function()
+	{
+		var qtype = JSON.parse(htmlDecode("<%= JSON.stringify(t.type)%>"));
+		var qneg = JSON.parse(htmlDecode("<%= JSON.stringify(t.negative)%>"));
+		var ques = JSON.parse(htmlDecode("<%= JSON.stringify(t.questions)%>"));
+		var bat2 = JSON.parse(htmlDecode("<%= JSON.stringify(t.batches)%>"));
+		var aa = $('#type> option');
+		var bb = $('#neg> option');
+		var dd = $('#batch> option');
+		for(var i=0;i<aa.length;i++)
+			if(aa[i].innerHTML == qtype)
+			{	
+				aa[i].setAttribute('selected','selected');	
+				break;
+			}
+		for(var i=0;i<bb.length;i++)
+			if(bb[i].innerHTML == qneg)
+			{	
+				bb[i].setAttribute('selected','selected');	
+				break;
+			}
+		for(var i=0,j=0;i<dd.length;i++)
+		{
+			if(dd[i].innerHTML === bat2[j])
+			{
+				dd[i].setAttribute('selected','selected');
+				++j;
+			}
+		}
+		
+		var t,M=[];
+		var questions = JSON.parse(htmlDecode("<%= JSON.stringify(questions)%>"));
+		var types = JSON.parse(htmlDecode("<%= JSON.stringify(types)%>"));
+		for(var i=0; i<questions.length;i++)
+				M[types[i]] = i;
+		var arr= [],str;
+		function change_questions(i)
+		{
+			if(i ==undefined)
+				return $('#questions').html("<option value=''>none</option>");	
+			arr = questions[i];
+			str = "<option value=''>none</option>";
+			for(var j=0;j<arr.length;j++)
+				str += "<option value='"+arr[j]+"'>"+arr[j]+"</option>";
+			$('#questions').html(str);
+		}
+		$('#type').change(function(e){
+			change_questions(M[$(this).val()]);			
+		}).change();
+
+		var cc = $('#questions> option');
+		for(var i=0;i<cc.length;i++)
+		{	
+			var found = ques.includes(cc[i].label);
+			if(found)
+			{	
+				cc[i].setAttribute('selected','selected');	
+			}
+		}
+	});
+
+	
+</script>
+<%  include ../partials/footer %>

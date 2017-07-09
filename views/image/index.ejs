@@ -1,0 +1,40 @@
+<%include ../partials/header%>
+<a href="/image/new" class="btn btn-primary btn-success">Image Upload</a>
+<div class="container">
+<div class="row">
+    <div class="col-md-3">    
+        <ul id="imageslist" class="list-group" style="overflow: scroll;overflow-x: hidden;height: 20em;">
+        <% for(var i=0;i<allimages.length;i++){%>
+            <li id="<%=i%>" class="list-group-item">
+                <h4> <%=allimages[i].name%></h4> 
+            </li>
+        <% } %>
+        </ul>
+    </div>
+    <div id="show" class="col-md-9">
+        <%if(allimages.length){%>
+        <img  src="<%=allimages[0].path%>">
+        <form  id="deleteform" action = "/image/<%= allimages[0]._id %>/?_method=DELETE" method="POST">
+            <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+            <button class = "btn btn-sm btn-danger">Delete</button>
+		</form>
+        <% } %>
+    </div>
+</div>
+</div>
+<script>
+    function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+    var images = JSON.parse(htmlDecode("<%= JSON.stringify(allimages)%>"));
+	$('#imageslist>li').on('click',function()
+    {
+        var id = parseInt($(this).attr('id'));
+        $('img').attr('src',images[id].path);
+        $('#deleteform').attr('action','/image/'+images[id]._id+'/?_method=DELETE');
+    });
+</script>
+<%include ../partials/footer%>

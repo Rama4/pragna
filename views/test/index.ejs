@@ -1,0 +1,62 @@
+<%  include ../partials/header %>
+<h1>Tests index</h1>
+
+<a href="/test/new" class="btn btn-lg btn-success">New Test</a>
+<div class="list-group">
+    <% for(var  i=0;i<tests.length;i++){%>
+        <%var t = tests[i];%>
+        <a href="/test/<%=t.name%>" class="list-group-item">
+        <h3><%=t.name%></h3>
+        <h4>date</h4><p class="date"></p>
+        <h4>duration</h4><p><%=t.duration%></p>
+        <h4>type</h4><p><%=t.type%></p>
+        <h4>negative</h4><p><%=t.negative%></p>
+        <h4>questions</h4>
+        <%if(t.questions){%>
+        <% for(var  j=0;j<t.questions.length;j++){%>
+            <p><%=t.questions[j]%></p>
+        <%}%>
+        <%}%>
+        </a>
+        <div class="row" style="margin-right:0;">
+            <div class="pull-right">
+                <form id="deleteform" action = "/test/<%= tests[i]._id %>/?_method=DELETE" method="POST">
+                <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+                <button class = "btn btn-md btn-danger"  >Delete</button>
+                </form> 
+            </div>
+            <div class="pull-right">
+                <a class = "btn btn-md btn-warning" href="/test/edit/<%= tests[i]._id %>" >Edit</a>
+            </div> 
+            <div class="pull-left">
+                <a class = "btn btn-md btn-primary" href="/test/start/<%= tests[i].name %>" >Take Test</a>
+            </div>
+
+        </div>
+    <%}%>
+</div>
+
+<script>
+function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+
+	$(document).ready(function()
+	{
+		var dates = JSON.parse(htmlDecode("<%= JSON.stringify(tests.map(function(ele){return ele.date}))%>"));
+		console.log(dates);
+		var c=0;
+		$('.date').each(function()
+		{
+    		var f = moment(dates[c]).format("DD-MMM-YYYY hh:mm A").toString();
+    		$(this).html(f);
+    		++c;
+		});
+		
+	});
+
+</script>
+<%  include ../partials/footer %>

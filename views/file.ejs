@@ -1,0 +1,62 @@
+<% include ./partials/header %>
+
+<h1>Manage uploaded files</h1>
+<div class="row">
+   <div class="col-md-3" id="file-tree">    
+    </div>
+</div>
+
+
+
+
+<script>
+    function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+    var f = JSON.parse(htmlDecode("<%= JSON.stringify(F)%>"));
+	
+$('input:file').change(
+    function(e){
+        var f = e.target.files,
+            len = f.length;		
+        for (var i=0;i<len;i++){
+            $('#sel').append('<h4>'+f[i].name+'</h4>');
+        }
+    });
+    console.log(f);
+// function dfs inputs a file directory tree and produces list items based on the structure.
+// It also gives id to each li according to the indices of the directory array
+// pre -> common prefix for id of all files in same folder 
+function dfs(g,pre="")
+{
+    var s = "<ul class='list-group'>";
+    for(var i=0;i<g.length;i++)
+    {
+        if(g[i].constructor === Array) //  if it is an array(i.e a folder)
+        {   //  g[i][0] = folder name , g[i][1] = folder contents
+            s += "<li id='f"+pre+i+"0' class='list-group-item'>"+g[i][0];
+            pre += ""+i+"1";
+            s += dfs(g[i][1],pre);
+            pre = pre.substring(0,pre.length-2);    // remove last 2 chars from pre
+            s += "</li>";
+        }
+        else
+            s += "<li id='f"+pre+i+"' class='list-group-item'>"+g[i]+"</li>";
+    }
+    s += "</ul>";
+    return s; 
+}
+$('#file-tree').html(dfs(f));
+$('#file-tree').on('click', '*', function(e)
+{
+    var id = $(this).attr('id'); 
+    e.stopPropagation();
+    
+});
+
+
+</script>
+<%include ./partials/footer%>

@@ -1,0 +1,50 @@
+<%  include ../partials/header %>
+<h1>Batches</h1>
+<a href="/batch/new" class="btn btn-lg btn-success">New batch</a>
+<div class="list-group">
+    <% for(let b of batches){%>
+        <a href="/batch/<%=b.name%>" class="list-group-item">
+            <h3><%=b.name%></h3>
+            <h4>start time</h4><p><%=b.time%></p>
+            <h4>duration</h4><p><%=b.duration%></p>
+            <h4>Teacher(s)</h4>
+            <%if(b.teachers){%>
+            <% for( tt of b.teachers ){%>
+                <p><%=tt%></p>
+            <%}%>
+            <%}%>
+        </a>
+        <div class="row" style="margin-right:0;">
+            <div class="pull-right">
+                <form id="deleteform" action = "/batch/<%= b._id %>/?_method=DELETE" method="POST">
+                <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+                <button class = "btn btn-md btn-danger"  >Delete</button>
+                </form> 
+            </div>
+            <div class="pull-right">
+                <a class = "btn btn-md btn-warning" href="/batch/edit/<%= b._id %>" >Edit</a>
+            </div> 
+        </div>
+    <%}%>
+</div>
+<script>
+function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+	$(document).ready(function()
+	{
+		var dates = JSON.parse(htmlDecode("<%= JSON.stringify(batches.map(function(ele){return ele.date}))%>"));
+		console.log(dates);
+		var c=0;
+		$('.date').each(function()
+		{
+    		var f = moment(dates[c]).format("DD-MMM-YYYY hh:mm A").toString();
+    		$(this).html(f);
+    		++c;
+		});	
+	});
+</script>
+<%  include ../partials/footer %>

@@ -1,0 +1,59 @@
+<%  include ../partials/header %>
+<h1 class="text-center">Account Settings</h1>
+<div class="container">
+    <a href="/change-password" class="btn btn-primary btn-lg">Change Password</a>
+    <button id='unregister'  class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal" >Deactivate User Account</button>
+</div>
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Deactivate User Account</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are You Sure about this?<br>You will lose all your data if you deactivate your account.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="yes" type="button" class="btn btn-md btn-danger" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-md btn-success" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="pwd" class="container" style="width:40%;min-width:500px;">
+    <h4>Please enter the password again to continue.</h4>
+    <form action='/unregister/<%=currentuser._id%>' method='post'>
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+        <div class="form-group">
+            <input class="form-control" type="password" placeholder="password" name="password">
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Ok</button>
+    </form>
+    <br>
+    <div id="cancel" class="btn btn-default btn-md">cancel</div>
+</div>
+<script>
+    function htmlDecode(input)
+	{    // for passing EJS variables to javascript
+	  var e = document.createElement('div');
+	  e.innerHTML = input;
+	  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+	}
+    var userId = JSON.parse(htmlDecode("<%= JSON.stringify(currentuser._id)%>"));
+    $(document).ready(function()
+    {
+        $('#yes').click(function()
+        {
+            $('#pwd').show();
+        });  
+        $('#cancel').click(function()
+        {
+            $('#pwd').hide();
+        });
+
+    });
+</script>
+<%  include ../partials/footer %>

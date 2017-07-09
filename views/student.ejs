@@ -1,0 +1,158 @@
+<%  include ./partials/header %>
+<h1 style="text-align: center"><span id="studname"><%=stud.user.username%></span>'s Profile</h1>
+<div class="container" width="50%;">
+    <h4>Class</h4>
+    <h5><%=stud.class%></h5>
+    <h4>School</h4>
+    <h5><%=stud.school%></h5>
+    <h4>Phone</h4>
+    <h5><%=stud.phone%></h5>
+    <h4>Address</h4>
+    <pre><%=stud.address%></pre>
+    <h4>Parent's Email</h4>
+    <h5><%=stud.parentemail%></h5>
+    <h4>Parent Phone</h4>
+    <h5><%=stud.parentphone%></h5>
+    <h3>Results</h3>
+    <h4>Tests</h4>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Test Name</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Top Score</th>
+        </tr>
+        </thead>
+        <tbody>
+           <%for( test of stud.tests ){%>
+                <%for(res of test.results){%>
+                <tr class="tests">
+                    <td><%=test.name%></td>
+                    <td><%=res.date.toDateString()%></td>
+                    <td><%=res.score%></td>
+                    <td><%=test.correct*test.questions.length%></td>
+                </tr>
+                <%}%>
+           <%}%>
+        </tbody>
+    </table>
+    <h4>Quizzes</h4>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Quiz Name</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Top Score</th>
+        </tr>
+        </thead>
+        <tbody>
+           <%for( test of stud.quizzes ){%>
+                <%for(res of test.results){%>
+                <tr class="quizzes">
+                    <td><%=test.name%></td>
+                    <td><%=res.date.toDateString()%></td>
+                    <td><%=res.score%></td>
+                    <td><%=test.correct*test.questions.length%></td>
+                </tr>
+                <%}%>
+           <%}%>
+        </tbody>
+    </table>
+    <h4>Assignments</h4>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Assignment Name</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Top Score</th>
+        </tr>
+        </thead>
+        <tbody>
+           <%for( test of stud.assignments ){%>
+                <%for(res of test.results){%>
+                <tr class="assignments">
+                    <td><%=test.name%></td>
+                    <td><%=res.date.toDateString()%></td>
+                    <td><%=res.score%></td>
+                    <td><%=test.correct*test.questions.length%></td>
+                </tr>
+                <%}%>
+           <%}%>
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+<div class="row">
+    <h1 style="text-align: center">Edit Profile</h1>
+    <div style="width: 50%; margin: 25px auto;">
+    <form action = "/edit/<%=stud.user.username%>" method = "post">
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+        <div class="form-group">
+            <input class="form-control" type="text" name="class" value="<%=stud.class%>" placeholder="11 A">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="school" value="<%=stud.school%>" placeholder="PSBB KK Nagar">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="phone" value="<%=stud.phone%>" placeholder="1234567890">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="parentphone" value="<%=stud.parentphone%>" placeholder="9000900099">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="parentemail" value="<%=stud.parentemail%>" placeholder="foo@bar">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" type="text" name="address" placeholder="Address"><%=stud.address%></textarea>
+        </div>
+        <div class="form-group">
+            <select multiple name="enroll">
+                <option value="">Please select</option>
+                <option value="11th Maths">11th Maths</option>
+                <option value="11th Physics">11th Physics</option>
+                <option value="11th Chemistry">11th Chemistry</option>
+                <option value="11th Biology">11th Biology</option>
+                <option value="12th Maths">12th Maths</option>
+                <option value="12th Physics">12th Physics</option>
+                <option value="12th Chemistry">12th Chemistry</option>
+                <option value="12th Biology">12th Biology</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value = "Save Changes">
+        </div>
+    </form>
+</div>
+</div>
+</div>
+
+
+<script>    
+    var stud = $('#studname').html();
+    $('.tests').click(function()
+    {   // assumption : first column of tests table is test name
+        // this is how we get the test name of that table row
+        // NOTE : $(this).children("td").html() and $(this).children("td")[0].innerHTML give same result
+        var testname = $(this).children("td").html(); 
+        window.location = "/test/results/"+testname+"/"+stud;
+    });
+    $('.quizzes').click(function()
+    {   // assumption : first column of tests table is test name
+        // this is how we get the test name of that table row
+        // NOTE : $(this).children("td").html() and $(this).children("td")[0].innerHTML give same result
+        var testname = $(this).children("td").html(); 
+        window.location = "/quiz/results/"+testname+"/"+stud;
+    });
+    $('.assignments').click(function()
+    {   // assumption : first column of tests table is test name
+        // this is how we get the test name of that table row
+        // NOTE : $(this).children("td").html() and $(this).children("td")[0].innerHTML give same result
+        var testname = $(this).children("td").html(); 
+        window.location = "/assignment/results/"+testname+"/"+stud;
+    });
+</script>
+<%  include ./partials/footer %>

@@ -1,0 +1,127 @@
+<%  include ../partials/header %>
+<div class="row" style="width:40%;margin:0 auto;" >
+	<h1 style="text-align: center">Edit Batch</h1>
+	<form id="text-form" action="/batch/edit/<%=t._id%>" method="POST">
+		<div class="form-group"><input class="form-control" type="hidden" name="_csrf" value="<%=csrfToken%>"/></div>
+		<label>batch Name</label>
+		<div class="form-group"><input class="form-control" required type="text" name="name" value="<%=t.name%>"/></div>
+		<label>Duration (in minutes)</label>
+		<div class="form-group"><input class="form-control" required type="text" id="duration" value="<%=t.duration%>" name="duration" placeholder="180"/></div>
+    <label>Select batch Time</label>
+		<div class="form-group"><input class="form-control" id="time" type="hidden" name="time"></div>
+		<select required id='day'>    
+			<option value="sun">sunday</option>
+			<option value="mon">monday</option>
+			<option value="tue">tuesday</option>
+			<option value="wed">wednesday</option>
+			<option value="thu">thursday</option>
+			<option value="fri">friday</option>
+			<option value="sat">saturday</option>	
+		</select>
+		<select id="hour">
+			<%for(var i=1;i<10;i++){%>
+				<option value='0<%=i%>'><%=i%></option>
+			<%}%>
+			<option value="10">10</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+		</select>
+		<select id="min">
+			<option value="00">00</option>
+			<%for(var i=15;i<60;i+=15){%>
+				<option value='<%=i%>'><%=i%></option>
+			<%}%>
+		</select>
+		<select id="am">
+			<option value="AM">AM</option>
+			<option value="PM">PM</option>
+		</select>
+		<div id="add" class="btn  btn-m/d btn-primary">Add Timings</div>
+		<div class="form-group">
+			<label for="stud">Select Students</label>
+			<select multiple class="form-control" id="stud" name="students">
+				<option value="">none</option>
+				<%for(s of s_names){%>
+					<option value="<%=s%>"><%=s%></option>
+				<%}%>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="teach">Select Teachers</label>
+			<select multiple class="form-control" id="teach" name="teachers">
+				<option value="">none</option>
+				<%for(s of t_names){%>
+					<option value="<%=s%>"><%=s%></option>
+				<%}%>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="teach">Add students from Batches(optional)</label>
+			<select class="form-control" id="batch" name="batches">
+				<option value="">none</option>
+				<%for(s of b_names){%>
+					<option value="<%=s%>"><%=s%></option>
+				<%}%>
+			</select>
+		</div>
+		<button class="btn btn-lg btn-block btn-success">Submit</button>
+	</form>
+</div>
+<div id="disp" style="position:fixed;top:30%;right:10%;"></div>
+<script>
+function htmlDecode(input)
+{    // for passing EJS variables to javascript
+	var e = document.createElement('div');
+	e.innerHTML = input;
+	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+var i,j;
+var teachers = JSON.parse(htmlDecode("<%= JSON.stringify(t.teachers)%>"));
+var students = JSON.parse(htmlDecode("<%= JSON.stringify(t.students)%>"));
+var studs = JSON.parse(htmlDecode("<%= JSON.stringify(s_names)%>"));
+var teachs = JSON.parse(htmlDecode("<%= JSON.stringify(t_names)%>"));
+var aa = $('#stud> option');
+var bb = $('#teach> option');
+for(s of students)
+	for(i=0;i<aa.length;i++)
+		if(aa[i].innerHTML === s)
+		{	aa[i].setAttribute('selected','selected'); break;	}
+for(s of teachers)
+	for(i=0;i<bb.length;i++)
+		if(bb[i].innerHTML === s)
+		{	bb[i].setAttribute('selected','selected'); break;	}
+var time = JSON.parse(htmlDecode("<%= JSON.stringify(t.time)%>"));
+var ind=new Array(time.length);
+for(var i=0;i<time.length;i++)
+	ind[i] = i;
+var c=0;
+console.log(time);
+for(t of time)
+{	
+	$('#disp').append(
+	"<div class='row' id='t"+c+"'><div style='background:#f0f0f0;font-size:20px;'>"+
+	t+"</div><span class='btn btn-xs btn-danger' id='r"+c+"'>Remove</span></div>");
+	c++;
+}
+$('#time').val(time);	// initially, val of time is original value
+$('#add').click(function()
+{
+	$('#disp').append(
+	"<div class='row' id='t"+c+"'><div style='background:#f0f0f0;font-size:20px;'>"+
+		$('#day').val()+" "+$('#hour').val()+":"+$('#min').val()+" "+$('#am').val()+
+	"</div><span class='btn btn-xs btn-danger' id='r"+c+"'>Remove</span></div>");
+	time.push(""+$('#day').val()+" "+$('#hour').val()+" "+$('#min').val()+" "+$('#am').val())
+	ind.push(c);	
+	++c;
+	$('#time').val(time);
+	console.log($('#time').val());
+});
+$('#disp').on('click','span',function()
+{
+	var j = parseInt($(this)[0].id.substr(1));
+	var index = ind.indexOf(j);
+	if(index>-1)
+	{	ind.splice(index,1);	time.splice(index,1); $('#time').val(time);	$('#t'+j).hide();	}
+});
+</script>
+<%  include ../partials/footer %>

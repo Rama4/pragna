@@ -1,0 +1,26 @@
+<%  include ../partials/header %>
+<h1>Announcements</h1>
+<p>click on an announcement to show more</p>
+<a href="/announcement/new" class="btn btn-lg btn-success">New Announcement</a>
+<div class="list-group">
+    <% for(var  i=0;i<an.length;i++){%>
+        <%var t = an[i];%>
+        <a href="/announcement/<%=t._id%>" class="list-group-item">
+        <h3><%=t.title%></h3>
+        <h5><%=t.date%></h5>
+        <pre><%=t.message%></pre>
+        </a>
+        <div class="row" style="margin-right:0;">
+            <div class="pull-right">
+                <form id="deleteform" action = "/announcement/<%= t._id %>/?_method=DELETE" method="POST">
+                <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
+                <button class = "btn btn-xs btn-danger"  >Delete</button>
+                </form> 
+            </div>
+            <div class="pull-right">
+                <a class = "btn btn-xs btn-warning" href="/announcement/edit/<%= t._id %>" >Edit</a>
+            </div>
+        </div>
+    <%}%>
+</div>
+<%  include ../partials/footer %>

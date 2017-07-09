@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>mathjax</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<link href="css/style.css" rel="stylesheet">-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    	<script>
+		window.MathJax = {
+				AuthorInit: function() {
+					MathJax.Hub.Register.StartupHook('End', function() {
+						MathJax.Hub.processSectionDelay = 0
+						var demoSource = document.getElementById('demoSource')
+						var demoRendering = document.getElementById('demoRendering')
+						var math = MathJax.Hub.getAllJax('demoRendering')[0]
+						demoSource.addEventListener('input', function() {
+							MathJax.Hub.Queue(['Text', math, demoSource.value])
+						})
+					})
+				}
+			}
+	</script>
+    </head>
+    <body>
+    <input id="#text" type="textarea" cols="100" rows="10" />
+
+    
+	<div class="leftColumn">
+		<label for="demoSource">Input:</label>
+		<br/>
+
+		<textarea class="ioArea" id="demoSource">
+			sum_(i=1)^n i^3=((n(n+1))/2)^2
+		</textarea>
+	</div>
+
+	<div class="rightColumn">
+		<label for="demoRendering">Rendering:</label>
+		<br/>
+
+		<div class="ioArea" id="demoRendering">
+			`sum_(i=1)^n i^3=((n(n+1))/2)^2`
+		</div>
+	</div>
+    
+
+    <div id="buttons"></div>
+    <div id="content"></div>
+        
+    <script>
+        var sym = ["`+`","`-`","`*`","`**`","`***`","`//`","`\\`","`xx`","`-:`","`@`","`o+`","`ox`","`o.`","`sum`","`prod`","`^^`",
+"`^^^`","`vv`","`vvv`","`nn`","`nnn`","`uu`","`uuu`","`int`",
+"`oint`","`del`","`grad`","`+-`","`O/`","`oo`","`aleph`",
+"`/_`","`:.`","`|...|`","`|cdots|`","`vdots`","`ddots`","`|\ |`","`|quad|`","`diamond`","`square`","`|__`","`__|`","`|~`","`~|`",
+"`CC`","`NN`","`QQ`","`RR`","`ZZ`","`=`","`!=`","`&lt;`","`&gt;`","`&lt;=`","`&gt;=`","`-&lt;`","`&gt;-`","`in`","`!in`","`sub`",
+"`sup`","`sube`","`supe`","`-=`","`~=`","`~~`","`prop`","`alpha`","`beta`","`chi`","`delta`","`Delta`","`epsilon`","`varepsilon`",
+"`eta`","`gamma`","`Gamma`","`iota`","`kappa`","`lambda`","`Lambda`","`mu`","`nu`","`omega`","`Omega`","`phi`","`Phi`","`varphi`",
+"`pi`","`Pi`","`psi`","`Psi`","`rho`","`sigma`","`Sigma`","`tau`","`theta`","`Theta`","`vartheta`","`upsilon`","`xi`","`Xi`","`zeta`",
+"`and`","`or`","`not`","`=&gt;`","`if`","`iff`","`AA`","`EE`","`_|_`",
+"`TT`","`|--`","`|==`","`(`","`)`","`[`","`]`","`{`","`}`","`(:`","`:)`","`{:`","`:}`",
+"`uarr`","`darr`","`rarr`","`-&gt;`","`|-&gt;`","`larr`","`harr`","`rArr`","`lArr`","`hArr`","`hat x`","`bar x`","`ul x`","`vec x`","`dot x`","`ddot x`"];
+
+    $('#buttons').append("<button id='undo'>undo</button>");
+    
+    for(symbol of sym)
+        $('#buttons').append("<button value='"+symbol.substring(1,symbol.length-1)+"'>"+symbol+"</button>");
+    var len_arr = [0];   // length array -> for undo
+    $('#buttons > button').click(function()
+    {
+        var str = $('#demoSource').html();
+        len_arr.push(len_arr[len_arr.length-1]+$(this).val());
+        //str = str === "" ? '`' : str.substr(0,str.length-1); 
+        $("#demoSource").html(str+$(this).val());
+        var math = MathJax.Hub.getAllJax('demoRendering')[0];
+        MathJax.Hub.Queue(['Text', math,document.getElementById('demoSource').value]);
+    });
+
+    $("#undo").click(function()
+    {
+        len_arr.pop();
+        var str = $('#demoSource').html().substr(0,len_arr[len_arr.length-1]);
+    });
+
+
+
+
+
+    
+
+
+
+    </script>
+   </body>
+</html>

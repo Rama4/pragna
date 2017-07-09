@@ -1,0 +1,196 @@
+<%  include ../partials/header %>
+<style>
+
+.btn-pref .btn {
+    --webkit-border-radius:0 !important;
+}
+.pull-right{
+	margin-right:15px;
+}
+.but{
+	width:47px;
+}
+</style>
+
+<h1 style="text-align: center">Register</h1>
+<div class="container">
+	<div class="container">
+		<div class="col-lg-12 col-sm-12">
+			<div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
+				<div class="btn-group" role="group">
+					<button type="button" id="Campgrounds" class="btn btn-default btn-md" href="#tab1" data-toggle="tab">Teacher</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" id="Ratings" class="btn btn-primary btn-md" href="#tab2" data-toggle="tab">Student</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" id="Info" class="btn btn-default btn-md" href="#tab3" data-toggle="tab">Parent</button>
+				</div>
+			</div>
+
+			<div class="well">
+				<div class="tab-content">
+					<div class="tab-pane fade in" id="tab1"> <!--teacher-->
+                        <p>Note : fields marked with * are mandatory</p>
+                        <form class="regform" action = "/register/teacher" method = "post" onsubmit="return foo()">
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <input required class="form-control" type="text" name="username" placeholder="Username*"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-envelope"></i>
+                                <input required class="form-control" type="email" name="email" placeholder="Email*"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                                <input pattern=".{6,}" required class="form-control" id="Password" type="password" name="password" placeholder="Password* (minimum 6 characters)"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                                <input required class="form-control" id="ConfirmPassword" type="password" name="confirmpassword" placeholder="Confirm Password*" onChange="checkPasswordMatch();"/>
+                                <div class="registrationFormAlert" id="passwordmsg"></div>
+                                <div id="lengthmsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="name" placeholder="Name*"/>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="phone" placeholder="Phone*"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="address" placeholder="Address"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-lg btn-primary btn-block" type="submit" value = "Create User"/>
+                            </div>
+                        </form>
+					</div>
+					<div class="tab-pane fade in active" id="tab2"> <!--student-->
+                        <p>Note : fields marked with * are mandatory</p>
+                        <form class="regform" action = "/register/student" method = "post" onsubmit="return foo()">
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <input required class="form-control" type="text" name="username" placeholder="Username*"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-envelope"></i>
+                                <input required class="form-control" type="email" name="email" placeholder="Email*"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-envelope"></i>
+                                <input class="form-control" type="email" name="parentemail" placeholder="Parent's Email"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                                <input pattern=".{6,}" required class="form-control" id="Password" type="password" name="password" placeholder="Password* (minimum 6 characters)"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                                <input required class="form-control" id="ConfirmPassword" type="password" name="confirmpassword" placeholder="Confirm Password*" onChange="checkPasswordMatch();"/>
+                                <div class="registrationFormAlert" id="passwordmsg"></div>
+                                <div id="lengthmsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="name" placeholder="Name*"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="fathername" placeholder="Father's Name"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="class" placeholder="Class (ex: 12 B)"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="school" placeholder="School"/>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="phone" placeholder="Phone*"/>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="parentphone" placeholder="Parent's Phone*"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="address" placeholder="Address"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-lg btn-primary btn-block" type="submit" value = "Create User"/>
+                            </div>
+                        </form>
+                        
+					</div>
+					<div class="tab-pane fade in" id="tab3"> <!--parent-->
+						<p>Note : fields marked with * are mandatory</p>
+                        <form class="regform" action = "/register/parent" method = "post" onsubmit="return foo()">
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <input required class="form-control" type="text" name="username" placeholder="Username*"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-envelope"></i>
+                                <input required class="form-control" type="email" name="email" placeholder="Email*"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                                <input pattern=".{6,}" required class="form-control" id="Password" type="password" name="password" placeholder="Password* (minimum 6 characters)"/>
+                            </div>
+                            <div class="form-group inner-addon left-addon">
+                                <i class="glyphicon glyphicon-lock"></i>
+                                <input required class="form-control" id="ConfirmPassword" type="password" name="confirmpassword" placeholder="Confirm Password*" onChange="checkPasswordMatch();"/>
+                                <div class="registrationFormAlert" id="passwordmsg"></div>
+                                <div id="lengthmsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="name" placeholder="Name*"/>
+                            </div>
+                            <div class="form-group">
+                                <input required class="form-control" type="text" name="phone" placeholder="Phone*"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="address" placeholder="Address"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="btn btn-lg btn-primary btn-block" type="submit" value = "Create User"/>
+                            </div>
+                        </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+
+function checkPasswordMatch() {
+    var password = $("#Password").val();
+    var confirmPassword = $("#ConfirmPassword").val();
+    if (password != confirmPassword)
+    {
+        $("#passwordmsg").html("Passwords do not match!").css('color', 'red');
+        return 0;
+    }
+    else
+        $("#passwordmsg").html("Passwords match.").css('color', 'green'); 
+    return 1;
+}
+function foo()
+{
+    if(checkPasswordMatch())
+        return true;
+    return false;
+}
+
+
+
+$(document).ready(function() {
+    $(".btn-pref .btn").click(function () {
+        $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+        $(this).removeClass("btn-default").addClass("btn-primary");   
+    });
+    //password matching
+    $("#Password, #ConfirmPassword").keyup(checkPasswordMatch);
+    
+});
+
+</script>   
+
+<%  include ../partials/footer %>

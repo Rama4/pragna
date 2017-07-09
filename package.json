@@ -1,0 +1,35 @@
+{
+  "name": "pragna",
+  "version": "1.0.0",
+  "description": "JEE coaching website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Rama Narasimhan",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.4.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.1",
+    "cheerio": "^0.22.0",
+    "client-sessions": "^0.7.0",
+    "connect-busboy": "0.0.2",
+    "connect-flash": "^0.1.1",
+    "crypto": "0.0.3",
+    "csurf": "^1.9.0",
+    "ejs": "^2.5.6",
+    "ejs-lint": "^0.3.0",
+    "express": "^4.15.2",
+    "flickrapi": "^0.6.0",
+    "fs": "0.0.1-security",
+    "gmail-send": "^1.2.10",
+    "method-override": "^2.3.8",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "mongoose": "^4.9.4",
+    "node-schedule": "^1.2.1",
+    "unzip": "^0.1.11"
+  }
+}
