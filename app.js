@@ -90,11 +90,13 @@ app.use("/batch",batchroutes);
 app.use("/",indexroutes);
 
 //============================================================
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
+const ip = process.env.IP || '0.0.0.0';
 
-app.listen(port,process.env.IP,function()
+app.listen(port,ip,function()
 {
     console.log("server started! evaluating any test, quiz or assignment results...");
+    console.log(`http://localhost:${port}`)
     eval.evaluate(); 
 
 });

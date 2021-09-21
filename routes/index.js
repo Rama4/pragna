@@ -18,22 +18,6 @@ var Teacher = require('../models/teacher');
 var Parent = require('../models/parent');
 var midw = require('../middleware/index');
 
-// Require the module and set default options  
-// You may use almost any option available in nodemailer,  
-// but if you need fine tuning I'd recommend to consider using nodemailer directly. 
-var send = require('gmail-send')({
-  user: 'rama41296@gmail.com',               // Your GMail account used to send emails 
-  pass: process.env.GMAIL_PASS,             // Application-specific password 
-  to:   'rnarasimhan4@gmail.com',               // Send back to yourself;  
-                                        // you also may set array of recipients:  
-                                        // [ 'user1@gmail.com', 'user2@gmail.com' ] 
-  // from:   '"User" <user@gmail.com>'  // from: by default equals to user 
-  // replyTo:'user@gmail.com'           // replyTo: by default undefined 
-  subject: 'Hello',
-  text:    'Hello World!'
-  // html:    '<b>html text text</b>' 
-});
-
 //-------------------------------------------------------------------------------------
 function dfs(dir, done)
 {
@@ -434,7 +418,7 @@ router.post("/register",function(req,res)
           return res.redirect('/');
         }
 
-        user.token = token;
+        user.token = 'done';
         user.expire = Date.now() + (48*60*60*1000); // 2 days
         user.save(function(err) { done(err, token, user); });
         
@@ -443,18 +427,7 @@ router.post("/register",function(req,res)
     function(token, user, done) 
     {
         console.log("user saved");
-        send({                         
-        subject: 'verification of Pragna IITJEE coaching account',   // Override value set as default
-        html: '<p>You are receiving this because you (or someone else) have registered in our Pragna IITJEE website.</p>'+
-      			'<p>Please click on the following link to verify your user account:</p>'+
-      					'<a href="http://'+req.headers.host+'/verify/'+token+'">Click to verify</a><br>'+
-      					'<p>If you did not request this, please ignore this email.</p>',
-        to: user.email                  
-        }, function (err,res) {
-            console.log('mail send(): err:', err, '; res:', res);
-            
-        });
-        req.flash('successArr', 'An e-mail has been sent to ' + user.email + ' with verification link.');
+        req.flash('successArr', `Welcome, ${user.username}`);
         res.redirect('/');  
     }
   ], function(err) {
