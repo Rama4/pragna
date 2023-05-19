@@ -53,7 +53,7 @@ router.get("/running/:id",midw.student,midw.checkbatch(Assignment),function(req,
                   var username  = req.user.username;
                   var ans = new Array(pass.questions.length);  // user's marked answers
                   for(var i=0;i<ans.length;i++)
-                    ans[i] = ["$"];
+                    ans[i] = [""];
                   Active.findOne({name:username,test:req.params.id},function(err,act)
                   {
                     if(err || !act)

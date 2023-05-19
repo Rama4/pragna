@@ -1,4 +1,4 @@
-<%  include ./partials/runningheader %>
+<%- include('./partials/runningheader') -%>
 <% var qnum = test.questions.length; %>
 <% var ind = 0; %>
 <% var k = 4; %>
@@ -138,7 +138,7 @@ function displayAnswer(i)
 function displayVerdict(i)
 {
     $('#ca').html(ANS[i]);
-    $('#ya').html(ans[i][0] === "$" ? "none" : ans[i]);
+    $('#ya').html(ans[i][0] === "" ? "none" : ans[i]);
     $('#ver').html(ver[i]);
 }
 //---------------------------question grid buttons-----------------------------------
@@ -182,4 +182,4 @@ $('#questiongrid > .row > button').click(function()
 
 
 </script>
-<%  include ./partials/footer %>
+<%- include('./partials/footer') -%>

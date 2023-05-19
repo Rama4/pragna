@@ -1,4 +1,4 @@
-<%include ../partials/header%>
+<%- include('../partials/header') -%>
 <a href="/image/new" class="btn btn-primary btn-success">Image Upload</a>
 <div class="container">
 <div class="row">
@@ -37,4 +37,4 @@
         $('#deleteform').attr('action','/image/'+images[id]._id+'/?_method=DELETE');
     });
 </script>
-<%include ../partials/footer%>
+<%- include('../partials/footer') -%>

@@ -1,7 +1,7 @@
 var express = require('express');
-var    http = require('http');
-var    fs = require('fs');
-var    path = require('path');
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
 var busboy = require('connect-busboy');
 var router = express.Router({mergeParams : true});
 var csrf = require('csurf');
@@ -11,6 +11,8 @@ var cheerio = require('cheerio');
 var unzip = require('unzip');
 var number = require("../models/number.js");
 var midw = require('../middleware/index');
+router.use(busboy());
+
 
 var sym = ["`+`","`-`","`*`","`**`","`***`","`//`","`\\`","`xx`","`-:`","`@`","`o+`","`ox`","`o.`","`sum`","`prod`","`^^`",
 "`^^^`","`vv`","`vvv`","`nn`","`nnn`","`uu`","`uuu`","`int`",
@@ -24,7 +26,6 @@ var sym = ["`+`","`-`","`*`","`**`","`***`","`//`","`\\`","`xx`","`-:`","`@`","`
 "`TT`","`|--`","`|==`","`(`","`)`","`[`","`]`","`{`","`}`","`(:`","`:)`","`{:`","`:}`",
 "`uarr`","`darr`","`rarr`","`-&gt;`","`|-&gt;`","`larr`","`harr`","`rArr`","`lArr`","`hArr`","`hat x`","`bar x`","`ul x`","`vec x`","`dot x`","`ddot x`"];
 
-router.use(busboy()); 
 
 function rem_ws(arr)
 {
@@ -109,7 +110,7 @@ var handle  = function(id,req,res)  // post requests
                 console.log('uploaded zip file');
                 fs.createReadStream(path + filename).pipe(unzip.Extract({ path: path})).on('close',function()   
                 {   //after  extract zip file
-                    fs.unlink(path + filename); // delete zip file after extracting 
+                    fs.unlinkSync(path + filename); // delete zip file after extracting 
                     console.log("extracted zip and deleted zip file");
                     // get the image number counter from mongodb
                     number.find({},function(err,num)
@@ -213,7 +214,7 @@ var handle  = function(id,req,res)  // post requests
                                 console.log('saved num');
                                 console.log(questions_info);
                                 fs.rmdirSync(path + fol_name) // delete folder
-                                fs.unlink(path + html_name); // delete html file 
+                                fs.unlinkSync(path + html_name); // delete html file 
 
                                 var s="",obj=[];
                                 // ASSUMPTION : ques and ans arrays have same length

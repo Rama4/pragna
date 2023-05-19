@@ -29,6 +29,7 @@ var url = process.env.DATABASEURL || 'mongodb://127.0.0.1/pragnadb';
 // the following line is because mpromise is deprecated
 mongoose.Promise = global.Promise;
 mongoose.connect(url);
+console.log(url);
 
 //Express Settings
 //============================================================
@@ -36,7 +37,7 @@ app.use(bp.urlencoded({extended:true}));
 
 //serve contents of the home page
 app.set("view engine","ejs");
-app.use(exp.static(__dirname + '/public'));
+app.use(exp.static('public'));
 app.use(methodoverride("_method"));   // new
 app.use(flash());
 

@@ -256,7 +256,7 @@ mo.calculate = function (collection,testname,student_name,ans,callback)
       for(var i=0;i<ans.length;i++)
       {
           ANS.push(test.questions[i].answer);
-          if(ans[i][0] === "$")
+          if(ans[i][0] === "")
           {  
             ver.push('Not Attempted');
           }
@@ -276,7 +276,7 @@ mo.calculate = function (collection,testname,student_name,ans,callback)
       {
           ANS.push(new Array());
           ANS[i] = test.questions[i].answer;
-          if(ans[i][0] === "$")
+          if(ans[i][0] === "")
           {  
             ver.push("Not Attempted");
             continue;

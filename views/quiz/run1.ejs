@@ -1,4 +1,4 @@
-<%  include ../partials/runningheader %>
+<%- include('../partials/runningheader %>
 
 <h1>Welcome to Test</h1>
 <% var qnum = questions.length; %>
@@ -76,7 +76,7 @@ var qnum = JSON.parse(htmlDecode("<%= JSON.stringify(qnum)%>"));
 ans = new Array(qnum);
 for(var k=0;k<qnum;k++)
 {
-  ans[k] = "$";
+  ans[k] = "";
   ANS[k] = "A";
 }
 //------------------------clock-----------------------------------------------------------
@@ -131,7 +131,7 @@ function calculate(ans,ANS,inc,dec) // calculate score
   var score = 0;
   for(var k=0;k<ANS.length;k++)
   { 
-    if(ans[k] == "$") continue;
+    if(ans[k] == "") continue;
      score = ans[k] == ANS[k] ? score + inc : score - dec;
   }
   return score;    
@@ -171,7 +171,7 @@ function setcheckbox(ind)
 }
 function displayQuestion(i)
 {
-    $('#myans').html(ans[i] == '$' ? 'none' : ans[i]);      
+    $('#myans').html(ans[i] == '' ? 'none' : ans[i]);      
     ele = "<h3>Question: "+(i+1)+"</h3><pre>"+texts[i]+"</pre>";
     for(var j=0;j<iArr[i].length;j++)
     {
@@ -190,11 +190,11 @@ $('#questiongrid .row button').click(function()
 $('#clear-response').click(function()
 {
   console.log(i);
-  if(ans[i] == '$')
+  if(ans[i] == '')
     return;
     console.log('#q1'+ans[i]);
   $('#q1'+ans[i])[0].checked = false;
-  ans[i] = "$";
+  ans[i] = "";
   $('#myans').html('none');
 
 });
@@ -247,7 +247,7 @@ $('input').on('click',function()
   if(ans[i] === selectedOption) // uncheck 
   { 
     this.checked = false;
-    ans[i] = "$";
+    ans[i] = "";
     $('#myans').html('none');
   }
   else  //save the checked option
@@ -324,4 +324,4 @@ function checkCookie() {
 
 
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

@@ -1,4 +1,4 @@
-<%  include ../partials/header %>
+<%- include('../partials/header') -%>
 <h1>New Test</h1>
 <p>NOTE: you may leave any field empty. In that case the default values given will be taken.</p>
 <div class="row" >
@@ -27,6 +27,7 @@
 			<option value="no">no</option>
 		</select>
 		<h4>Questions</h4>
+		<% console.log('questions=', questions)  %>
 		<select id="questions" name="questions" multiple>
 		</select>
 		<h4>Select batch</h4>
@@ -65,6 +66,7 @@ $("#type option").each(function()
 test_types =  test_types.sort();
 
 var questions = JSON.parse(htmlDecode("<%= JSON.stringify(questions)%>"));
+console.log('questions=', questions);
 for(var i=0; i<questions.length;i++)
 {
 	var t = questions[i][0].type;
@@ -109,4 +111,4 @@ function getSelectValues(select) {
   return result;
 }
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

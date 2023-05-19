@@ -1,4 +1,4 @@
-<%  include ../partials/header %>
+<%- include('../partials/header') -%>
 <h1>Showing Assignment : <%=t.name%></h1>
 <h3><%=t.name%></h3>
 <p><em>Submitted By <strong><%= t.author.username %></strong></em></p>
@@ -31,4 +31,4 @@ function htmlDecode(input)
 		$('#date').html(f);
 	});
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

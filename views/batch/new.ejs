@@ -1,4 +1,4 @@
-<%  include ../partials/header %>
+<%- include('../partials/header') -%>
 <div class="row" style="width:40%;margin:0 auto;" >
 	<h1 style="text-align: center">New Batch</h1>
 	<form id="text-form" action="/batch/new" method="POST">
@@ -92,4 +92,4 @@ $('#disp').on('click','span',function()
 	{	ind.splice(index,1);	time.splice(index,1); $('#time').val(time);	$('#t'+j).hide();	}
 });
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

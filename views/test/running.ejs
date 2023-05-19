@@ -1,4 +1,4 @@
-<%  include ../partials/runningheader %>
+<%- include('../partials/runningheader %>
 <% var qnum = test.questions.length; %>
 <% var ind = 0; %>
 <% var k = 4; %>
@@ -98,7 +98,7 @@
  <% for(let ques of test.questions){%>
   <% imgArr.push(ques.images); %>
  <%  } %>
-<%console.log(test._id);%>
+<!-- <%console.log(test._id);%> -->
 <script>
 function htmlDecode(input)
 {    // for passing EJS variables to javascript
@@ -211,20 +211,27 @@ function setcheckbox(ind)
 }
 function decodeHtml(html)
 {
+  if(html === undefined || html.length === 0)
+  {
+    return "";
+  }
     var txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
 }
 function displayQuestion(i)
 {
-    $('#myans').html(ans[i][0] === '$' ? 'none' : ans[i].toString());      
+    // let IMAGE_PATH_PREFIX = "../../public/";
+    let IMAGE_PATH_PREFIX = "/";
+    $('#myans').html(ans[i][0] === '' ? 'none' : ans[i].toString());      
     //ele = "<h3>Question: "+(i+1)+"</h3><pre>"+texts[i]+"</pre>";
     ele = decodeHtml(htmls[i]);
     $('#qnumber').html("Question: "+(i+1));
 
     for(var j=0;iArr[i]&&j<iArr[i].length;j++)
     {
-      ele += "<img src='"+iArr[i][j]+"' height='auto' width='auto'>";
+      console.log("image source path = ", IMAGE_PATH_PREFIX + iArr[i][j]);
+      ele += "<img src='" + IMAGE_PATH_PREFIX + iArr[i][j] + "' height='auto' width='auto'>";
     }
     $('#display').html(ele);
     setcheckbox(i); //display saved option for current question
@@ -259,14 +266,14 @@ $('#close').click(function()
 $("#end").click(function()
 {
   $.post('/test/end-test',{'userId':userId,_csrf:'<%=csrfToken%>'});
-  window.location. replace('/');
+  window.location.replace('/');
 });
 //----------------------------save/clear responses------------------------------------------
 $('#clear-response').click(function()
 {
-  if(ans[i][0] === '$')
+  if(ans[i][0] === '')
     return;
-  ans[i] = ['$'];
+  ans[i] = [''];
   $('#myans').html('none');
   $("#A").removeClass("markedoption");
   $("#B").removeClass("markedoption");
@@ -278,7 +285,7 @@ var disp_sel_ans;
 $('.answers>li').on('click',function()
 {
   selectedOption = $(this).text();
-  var empty = ans[i][0] === '$';
+  var empty = ans[i][0] === '';
   var ind = empty ? -1 : ans[i].indexOf(selectedOption);
   if(ind > -1) // uncheck 
   { 
@@ -286,7 +293,7 @@ $('.answers>li').on('click',function()
     ans[i].splice(ind, 1);
     disp_sel_ans = ans[i].toString();
     if(ans[i].length === 0)
-    {  ans[i] = ['$']; disp_sel_ans = "none";  }
+    {  ans[i] = ['']; disp_sel_ans = "none";  }
   }
   else  //save the checked option
   {
@@ -295,6 +302,7 @@ $('.answers>li').on('click',function()
     ans[i].sort();
     disp_sel_ans = ans[i].toString();
   }
+  console.log('ans=', JSON.stringify(ans, null, 4));
   $('#myans').html(disp_sel_ans);
 });
 //------------------------------initial settings----------------------------------------
@@ -314,4 +322,4 @@ $(window).on('beforeunload', function() {
 
 //----------------------------------------------------------------------
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

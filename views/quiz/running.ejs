@@ -1,4 +1,4 @@
-<%  include ../partials/runningheader %>
+<%- include('../partials/runningheader %>
 <% var qnum = quiz.questions.length; %>
 <% var ind = 0; %>
 <% var k = 4; %>
@@ -120,7 +120,7 @@ function send_answers(url)
 {
     $.post(url,
     {
-        _csrf : '<%=csrfToken%>' ,
+        _csrf : '<%=csrfToken%>',
         name: username,
         ans: ans
     });
@@ -216,7 +216,7 @@ function decodeHtml(html) {
 }
 function displayQuestion(i)
 {
-    $('#myans').html(ans[i][0] === '$' ? 'none' : ans[i].toString());      
+    $('#myans').html(ans[i][0] === '' ? 'none' : ans[i].toString());      
     //ele = "<h3>Question: "+(i+1)+"</h3><pre>"+texts[i]+"</pre>";
     ele = decodeHtml(htmls[i]);
     $('#qnumber').html("Question: "+(i+1));
@@ -280,9 +280,9 @@ $("#end").click(function()
 //----------------------------save/clear responses------------------------------------------
 $('#clear-response').click(function()
 {
-  if(ans[i][0] === '$')
+  if(ans[i][0] === '')
     return;
-  ans[i] = ['$'];
+  ans[i] = [''];
   $('#myans').html('none');
   $("#A").removeClass("markedoption");
   $("#B").removeClass("markedoption");
@@ -294,7 +294,7 @@ var disp_sel_ans;
 $('.answers>li').on('click',function()
 {
   selectedOption = $(this).text();
-  var empty = ans[i][0] === '$';
+  var empty = ans[i][0] === '';
   var ind = empty ? -1 : ans[i].indexOf(selectedOption);
   if(ind > -1) // uncheck 
   { 
@@ -302,7 +302,7 @@ $('.answers>li').on('click',function()
     ans[i].splice(ind, 1);
     disp_sel_ans = ans[i].toString();
     if(ans[i].length === 0)
-    {  ans[i] = ['$']; disp_sel_ans = "none";  }
+    {  ans[i] = ['']; disp_sel_ans = "none";  }
   }
   else  //save the checked option
   {
@@ -329,4 +329,4 @@ $(window).on('beforeunload', function() {
 
 //----------------------------------------------------------------------
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

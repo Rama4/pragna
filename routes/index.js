@@ -619,6 +619,7 @@ router.post('/unregister/:id',function(req,res)
                     remove_user_data(user,function(code)
                     {   // delete req.session.user; and req.user?
                         console.log("deactivated user code:"+code);
+                        user.remove();
                         req.flash("successArr","Good Bye, "+user.username+"!");
                         res.redirect('/');
                     }); 

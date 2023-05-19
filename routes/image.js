@@ -1,25 +1,13 @@
 
 var express = require('express');
-var    http = require('http');
-var    fs = require('fs');
-var    path = require('path');
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
 var busboy = require('connect-busboy');
 var router = express.Router({mergeParams : true});
 var Image =  require('../models/image.js');
 var csrf = require('csurf');
 var midw = require('../middleware/index');
-
-var Flickr = require("flickrapi"),
-    flickrOptions = {
-      api_key: "API key that you get from Flickr",
-      secret: "API key secret that you get from Flickr"
-    };
-
-Flickr.authenticate(flickrOptions, function(error, flickr) {
-  // we can now use "flickr" as our API object
-});
-
-
 router.use(busboy()); 
 
 var doit  = function(id,req,res)    // get requests
@@ -106,7 +94,7 @@ router.delete("/:id",midw.checkOwnership(Image),function(req,res)
     }        
     else
     {   
-        fs.unlink(__dirname + '/../public/'+img.path); // delete file in server
+        fs.unlinkSync(__dirname + '/../public/'+img.path); // delete file in server
         img.remove();                                           // delete file from database
         req.flash("successArr","image Deleted!");
         res.redirect("/image");

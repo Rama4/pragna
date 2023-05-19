@@ -132,7 +132,7 @@ router.get("/running/:id",midw.student,midw.checkbatch(Test),function(req,res)
                   var username  = req.user.username;
                   var ans = new Array(ptest.questions.length);  // user's marked answers
                   for(var i=0;i<ans.length;i++)
-                    ans[i] = ['$'];
+                    ans[i] = [''];
                   Active.findOne({name:username,test:req.params.id},function(err,act)
                   {
                     if(err)return res.send(err);
@@ -152,8 +152,7 @@ router.get("/running/:id",midw.student,midw.checkbatch(Test),function(req,res)
                       for(var i=0;i<act.ans.length;i++)
                         ans[i] = act.ans[i].split(",");
                     }
-                    console.log("ans=");
-                    console.log(ans);
+                    console.log("ans=", ans);
                     //results calc will happen on nearest minute, if duration is a float, else 1 min later
                     var time = parseInt(test.duration)+1;
                     console.log((moment(test.date).add(time,'minutes')));
@@ -279,18 +278,21 @@ else => at test over
 */
 router.post('/end-test',function(req,res)
 {
-  if(moment() < moment(test.date) || moment() > (moment(test.date).add(test.duration,'/minutes')) )
-   return console.log("bad timing!");
+  console.log(req.body);
+  // if(moment() < moment(test.date) || moment() > (moment(test.date).add(test.duration,'/minutes')) )
+  //  return console.log("bad timing!");
 
    // if they finish before test ended don't show the answers
-  else if(moment() < (moment(test.date).add(test.duration,'minutes')))
-  {
+  // else if(moment() < (moment(test.date).add(test.duration,'minutes')))
+  // {
 
-  }
-  else // finish at test end
-  {
+  // }
+  // else // finish at test end
+  // {
 
-  }
+  // }
+  req.flash("successArr","Test Completed Successfully!");
+  res.redirect("/test");
 });
 //-------------------------------------------------------------------------
 router.delete("/:id",midw.checkOwnership(Test),function(req,res)

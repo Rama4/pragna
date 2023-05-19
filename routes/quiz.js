@@ -90,7 +90,7 @@ router.get("/running/:id",midw.student,midw.checkbatch(Quiz),function(req,res)
                 {
                   ans = new Array(q.questions.length);  // user's marked answers
                   for(var i=0;i<ans.length;i++)
-                    ans[i] = ["$"];
+                    ans[i] = [""];
                   var time = moment().add(q.duration,'minutes').toDate();
                   Active.create({name:username,time:time,test:q.name,ans:ans},function()
                   {

@@ -1,4 +1,4 @@
-<%  include ../partials/header %>
+<%- include('../partials/header') -%>
 <h1>Showing Test : <%=t.name%></h1>
 <p><em>Submitted By <strong><%= t.author.username %></strong></em></p>
 <h4>date</h4><p id="date"></p>
@@ -33,4 +33,4 @@ function htmlDecode(input)
 		$('#date').html(f);
 	});
 </script>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>

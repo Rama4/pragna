@@ -1,8 +1,8 @@
-<%  include partials/header %>
+<%- include('partials/header') -%>
 <button id="announcements-button" class="btn btn-lg btn-primary">Announcements</button>
 <div id="announcements">
     <div class="panel-group">
-        <a href="/announcement%>" style="text-decoration:none;">
+        <a href="/announcement" style="text-decoration:none;">
             <div class="panel panel-heading">See all Announcements</div>
         </a>
     </div>
@@ -26,11 +26,7 @@
 </div>
 <div class="container-fluid" style="width:70%;background:#eee;">
     <h1>Introduction</h1>      
-    <h4>Pragna Institute was started by Mr. Subba Rao, who is an experienced faculty, worked in many reputed institutes all over India.<br>
-    With his vast experience and unequalled passion for teaching and motivating students to fulfil their dreams he started this institute.<br> 
-    <br>    
-    He has worked in Andhra Pradesh which is an IIT Hub and in Tamilnadu.<br>He has helped more than <strong>200</strong> students in to become IITans.
-    </h4>
+
 </div>
 <script>
     $('#announcements-button').click(function()
@@ -39,4 +35,4 @@
     });
 </script>
 
-<%  include partials/footer %>
+<%- include('partials/footer') -%>

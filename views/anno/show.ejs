@@ -1,4 +1,4 @@
-<%  include ../partials/header %>
+<%- include('../partials/header') -%>
 <h1>Showing Announcement</h1>
 <h3><%=t.title%></h3>
 <p><em>Submitted By <strong><%= t.author.username %></strong></em></p>
@@ -6,4 +6,4 @@
 <p><%=t.date%></p>
 <h4>Message</h4>
 <pre><%=t.message%></pre>
-<%  include ../partials/footer %>
+<%- include('../partials/footer') -%>
