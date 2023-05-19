@@ -50,6 +50,19 @@ app.use(sessions({
 
 app.use(csrf()); // must be declared after sessions, otherwise "misconfigured csrf" error
 
+
+const port = process.env.PORT || 5000;
+const ip = process.env.IP || 'localhost';
+const domain = `http://${ip}:${port}`;
+const client_domain = `http://${ip}:3000`;
+
+// allow cors from client
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", `${client_domain}`); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 //============================================================
 
 //Middleware Settings
@@ -91,13 +104,11 @@ app.use("/batch",batchroutes);
 app.use("/",indexroutes);
 
 //============================================================
-const port = process.env.PORT || 3000;
-const ip = process.env.IP || '0.0.0.0';
 
 app.listen(port,ip,function()
 {
     console.log("server started! evaluating any test, quiz or assignment results...");
-    console.log(`http://localhost:${port}`)
+    console.log(`server running at: ${domain}`);
     eval.evaluate(); 
 
 });

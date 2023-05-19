@@ -127,7 +127,7 @@ router.get("/",function(req,res)
 {
     Anno.find({},function(err,an)
     {
-        res.render("landing",{an:an});
+        res.status(200).send(an);
     });
     
 });
